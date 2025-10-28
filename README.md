@@ -3,9 +3,12 @@
 DeOCR (de-cor), A reverse OCR tool that transforms text datasets (JSON, CSV) to images of specified sizes (e.g., `512x512` or `1024x1024`). This tool can be considered as a text-to-image data pre-processing component in pipelines such as [DeepSeek-OCR](https://github.com/deepseek-ai/DeepSeek-OCR).
 
 ```mermaid
+---
+title: DeOCR Usage in LLM Pipeline
+---
 flowchart LR
   TEXTDATA[/"some context in text form"/]
-  MMDATA[/"Does this particular car <br/> fa:fa-image (fa:fa-car) present in here fa:fa-image ?"/]
+  MMDATA[/"Does this particular car <br/> &lt;image&gt; present in here &lt;image&gt; ?"/]
   HFDATASET[("huggingface dataset")] 
   subgraph DeOCR
     CSS1["cli --style red-text textit"]
@@ -15,13 +18,20 @@ flowchart LR
   end
   TEXTDATA --> CSS1 --> IMG1[["some context in text form"]]:::redText
   TEXTDATA --> CSS2 --> IMG2[["some context in text form"]]
-  MMDATA --> CSS3 --> IMG3[["Does this particular car <br/> fa:fa-image <br/> present in here <br/>fa:fa-image <br/>?"]]
-  HFDATASET --> MAPPER --> DEOCRDATASET[("fa:fa-image imagified dataset")]
+  MMDATA --> CSS3 --> IMG3[["Does this particular car <br/> 🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>🖼️🖼️🖼️🚗🖼️🖼️🖼️<br/>🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/> present in here <br/> 🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>?"]]
+  HFDATASET --> MAPPER --> DEOCRDATASET[("🖼️ imagified dataset")]
+  DEOCRDATASET & IMG1 & IMG2 & IMG3 -.-> MODEL["LLMs or VLMs<br/> Evaluation"]
   classDef redText color:#ff0000,font-style:italic;
   IMG1 ~~~|"fa:fa-mobile-screen A screenshot of text <br/>w. special formatting"| IMG1
   IMG2 ~~~|"fa:fa-mobile-screen A plain screenshot of text"| IMG2
   IMG3 ~~~|"fa:fa-mobile-screen A screenshot of both text and images"| IMG3
 ```
+
+<details><summary>Here is an output example, sized `512x512`, with random string as context</summary>
+
+![a 512x512 example](assets/output_sample_w512_h512.png)
+
+</details>
 
 # Quick Start
 
@@ -39,7 +49,11 @@ uv add "deocr @ https://github.com/Moenupa/DeOCR.git"
 pip install "git+https://github.com/Moenupa/DeOCR.git"
 ```
 
-For development, please use uv to manage the environment:
+</details>
+
+<details><summary>For development</summary>
+
+Please use uv to manage the environment:
 
 ```sh
 git clone https://github.com/Moenupa/DeOCR.git
