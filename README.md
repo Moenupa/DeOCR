@@ -46,6 +46,7 @@ git clone https://github.com/Moenupa/DeOCR.git
 cd DeOCR
 uv venv
 uv sync --dev
+pre-commit install
 ```
 
 </details>
