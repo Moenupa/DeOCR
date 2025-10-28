@@ -46,7 +46,7 @@ playwright install chromium
 
 ```sh
 # uv
-uv add "deocr @ https://github.com/Moenupa/DeOCR.git"
+uv add "deocr @ git+https://github.com/Moenupa/DeOCR.git"
 # for pip or conda
 pip install "git+https://github.com/Moenupa/DeOCR.git"
 # activate your python environment, then install playwright deps
