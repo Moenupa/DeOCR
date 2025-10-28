@@ -39,12 +39,17 @@ def md2image(
     height: int = 512,
     width: int = 512,
     css_path: str = None,
-):
+    overwrite: bool = False,
+) -> None:
     # prepare dirs
     parent_dir = osp.dirname(out_path)
     if not osp.exists(parent_dir):
         os.makedirs(parent_dir)
 
     from .md2img import sync_api as md2img
+
+    # if exists, treat as ready and do nothing
+    if not overwrite and osp.exists(out_path):
+        return
 
     md2img.markdown2image(md_text, out_path, width=width, height=height)
