@@ -1,0 +1,23 @@
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
+
+[project]
+name = "DeOCR"
+version = "0.1.0"
+description = "A reverse OCR tool that transforms text datasets (JSON, CSV) to images of `512x512` or `1024x1024`."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "jsonargparse[signatures]>=4.26.1",
+    "datasets",
+    "markdown",
+    "playwright>=1.49.1,<1.56.0",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.2",
+    "ruff>=0.14.2",
+]
