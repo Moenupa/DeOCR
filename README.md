@@ -38,6 +38,8 @@ flowchart LR
 ```sh
 # TODO: this is not ready yet
 pip install deocr
+# activate your python environment, then install playwright deps
+playwright install chromium
 ```
 
 <details><summary>Alternatively, install from source</summary>
@@ -47,6 +49,8 @@ pip install deocr
 uv add "deocr @ https://github.com/Moenupa/DeOCR.git"
 # for pip or conda
 pip install "git+https://github.com/Moenupa/DeOCR.git"
+# activate your python environment, then install playwright deps
+playwright install chromium
 ```
 
 </details>
@@ -60,6 +64,8 @@ git clone https://github.com/Moenupa/DeOCR.git
 cd DeOCR
 uv venv
 uv sync --dev
+source .venv/bin/activate
+playwright install chromium
 pre-commit install
 ```
 
