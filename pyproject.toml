@@ -8,7 +8,7 @@ version = "0.1.0"
 authors = [
     {name = "Moenupa", email = "moenupa@gmail.com"}
 ]
-description = "A reverse OCR tool that transforms text datasets (JSON, CSV) to images of `512x512` or `1024x1024`."
+description = "A reverse OCR tool that renders huggingface-compatible datasets to images of specified sizes (e.g., `512x512`)."
 readme = "README.md"
 requires-python = ">=3.9,<3.14"
 classifiers = [

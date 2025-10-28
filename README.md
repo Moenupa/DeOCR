@@ -1,6 +1,6 @@
 # DeOCR
 
-DeOCR (de-cor), A reverse OCR tool that transforms text datasets (JSON, CSV) to images of specified sizes (e.g., `512x512` or `1024x1024`). This tool can be considered as a text-to-image data pre-processing component in pipelines such as [DeepSeek-OCR](https://github.com/deepseek-ai/DeepSeek-OCR).
+DeOCR (de-cor), A reverse OCR tool that renders huggingface-compatible datasets to images of specified sizes (e.g., `512x512`). This tool can be considered as a text-to-image data pre-processing component in pipelines such as [DeepSeek-OCR](https://github.com/deepseek-ai/DeepSeek-OCR).
 
 ```mermaid
 ---
@@ -36,7 +36,6 @@ flowchart LR
 # Quick Start
 
 ```sh
-# TODO: this is not ready yet
 pip install deocr
 # activate your python environment, then install playwright deps
 playwright install chromium
