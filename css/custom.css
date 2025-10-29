@@ -1,5 +1,25 @@
-p {
-    color: teal;
-    font-size: 16px;
+* {
+    /* font-family and font-color */
     font-family: monospace;
+    color: white;
+}
+
+body {
+    padding: 12px 12px 12px 12px;
+    background-color: black;
+}
+
+h1 {
+    /* for markdown headings */
+    font-size: 20px;
+}
+
+p {
+    /* adjust paragraph spacing, overriding the above */
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+    text-align: justify;
+    hyphens: auto;
+    font-size: 14px;
 }

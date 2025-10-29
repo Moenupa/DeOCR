@@ -7,7 +7,7 @@ from playwright.sync_api import Playwright, sync_playwright
 # Init browser and context
 _playwright: Playwright = sync_playwright().start()
 _browser = _playwright.chromium.launch()
-_context = _browser.new_context(viewport={"width": 800, "height": 1})
+_context = _browser.new_context(viewport={"width": 1024, "height": 1024})
 _page = _context.new_page()
 
 
@@ -15,28 +15,27 @@ def html2image(
     html: str,
     path: str,
     *,
-    width: Optional[int] = None,
+    width: int = 1024,
     height: Optional[int] = None,
     css: Optional[str] = None,
     css_path: Optional[str] = None,
     allow_flexible_height: bool = False,
 ):
     _page.reload(wait_until="commit")
-    if width is not None:
-        _page.set_viewport_size({"width": width, "height": height or 1})
+    _page.set_viewport_size({"width": width, "height": height or width})
     _page.set_content(html=html, wait_until="load")
     # Inject CSS if provided
     if css:
         _page.add_style_tag(content=css)
     if css_path:
         _page.add_style_tag(path=css_path)
-    _page.screenshot(path=path, full_page=allow_flexible_height)
+    _page.screenshot(path=path, full_page=allow_flexible_height or height is None)
 
 
 def markdown2image(
     md: str,
     path: str,
-    width: Optional[int] = None,
+    width: int = 1024,
     height: Optional[int] = None,
     css: Optional[str] = None,
     css_path: Optional[str] = None,
