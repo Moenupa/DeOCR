@@ -38,6 +38,7 @@ def md2image(
     out_path: str,
     height: int = 512,
     width: int = 512,
+    css: str = None,
     css_path: str = None,
     overwrite: bool = False,
 ) -> None:
@@ -52,4 +53,11 @@ def md2image(
     if not overwrite and osp.exists(out_path):
         return
 
-    md2img.markdown2image(md_text, out_path, width=width, height=height)
+    md2img.markdown2image(
+        md_text,
+        out_path,
+        width=width,
+        height=height,
+        css=css,
+        css_path=css_path,
+    )

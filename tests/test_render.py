@@ -5,7 +5,7 @@ import string
 import pytest
 from PIL import Image
 
-from deocr.loader import md2image, text2md
+from deocr.render import md2image, text2md
 
 
 def generate_random_string(length: int):
@@ -33,22 +33,39 @@ def generate_random_string(length: int):
         ("No images here.", [], "No images here."),
     ],
 )
-def test_text2md(context, images, expected):
+def test_text2md(context: str, images: list[dict | str], expected: str):
     result = text2md(context, images)
     assert result == expected
 
 
 @pytest.mark.parametrize(
-    "text,width,height",
+    "text,width,height,css,css_path",
     [
-        (generate_random_string(1024), 512, 512),
-        (generate_random_string(4096), 1024, 1024),
-        (generate_random_string(2048), 512, None),
+        (generate_random_string(1024), 512, 512, None, None),
+        (generate_random_string(8192), 1024, 1024, None, "css/custom.css"),
+        (
+            generate_random_string(2048),
+            512,
+            None,
+            "p { color: red; font-family: sans-serif; }",
+            None,
+        ),
     ],
 )
-def test_md2image(text, width, height):
+def test_md2image(text: str, width: int, height: int, css: str, css_path: str):
+    if css_path is not None:
+        assert osp.exists(css_path)
+
     output_path = f".cache/w{width}_h{height}.png"
-    md2image(text, output_path, width=width, height=height, overwrite=True)
+    md2image(
+        text,
+        output_path,
+        width=width,
+        height=height,
+        css=css,
+        css_path=css_path,
+        overwrite=True,
+    )
     assert osp.exists(output_path)
 
     # check image size is as expected
