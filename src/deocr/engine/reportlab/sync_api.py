@@ -12,6 +12,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import Paragraph, SimpleDocTemplate
 
 from ..args import PDFArgs
+from ..dataio import get_identifier
 
 PRESETS = getSampleStyleSheet()
 
@@ -32,9 +33,7 @@ def text_to_images(
 
     # Generate unique ID
     if unique_id is None:
-        import hashlib
-
-        unique_id = hashlib.md5(text.encode()).hexdigest()[:16]
+        unique_id = get_identifier(text, layout_kwargs)
 
     # Register font
     if font_path is not None:
