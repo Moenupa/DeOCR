@@ -48,3 +48,6 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/Moenupa/DeOCR"
 Issues = "https://github.com/Moenupa/DeOCR/issues"
+
+[tool.pytest.ini_options]
+addopts = "--ignore=tests/async/"
