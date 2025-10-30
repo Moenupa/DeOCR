@@ -1,6 +1,6 @@
 import pytest
 
-from deocr.engine.dataio import text2md
+from deocr.engine.dataio import get_identifier, text2md
 
 
 @pytest.mark.parametrize(
@@ -25,3 +25,21 @@ from deocr.engine.dataio import text2md
 def test_text2md(context: str, images: list[dict | str], expected: str):
     result = text2md(context, images)
     assert result == expected
+
+
+@pytest.mark.parametrize(
+    "text,expected",
+    [
+        (
+            "Sample text for testing.",
+            "47846036f75e9778733fe9416aee3a8e",
+        ),
+        (
+            "Another sample text.",
+            "977e3a5f3edae58bf2a272967b4bb47d",
+        ),
+    ],
+)
+def test_get_identifier(text: str, expected: str):
+    actual = get_identifier(text)
+    assert actual == expected
