@@ -3,7 +3,10 @@ import os
 import os.path as osp
 from typing import Optional
 
-import markdown
+from markdown_it import MarkdownIt
+from mdit_py_plugins.dollarmath import dollarmath_plugin
+from mdit_py_plugins.footnote import footnote_plugin
+from mdit_py_plugins.front_matter import front_matter_plugin
 from playwright._impl._api_structures import PdfMargins
 from playwright.sync_api import Playwright, sync_playwright
 
@@ -31,6 +34,20 @@ def html2image(
     css: Optional[str] = None,
     css_path: Optional[str] = None,
 ) -> list[str]:
+    """
+    Render HTML content to image(s) using Playwright.
+
+    Args:
+        html (str): The HTML content to render.
+        root (str): The root directory to save output images.
+        pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
+        css (Optional[str], optional): CSS content to inject. Default: None.
+        css_path (Optional[str], optional): Path to CSS file to inject. Default: None.
+
+    Returns:
+        list[str]: List of file paths to the generated images.
+    """
+
     _page.reload(wait_until="commit")
     width, height = pdf_args.pagesize
 
@@ -92,5 +109,25 @@ def markdown2image(
     css: Optional[str] = None,
     css_path: Optional[str] = None,
 ) -> list[str]:
-    html = markdown.markdown(md)
+    """
+    Render markdown content to image(s) using Playwright.
+
+    Args:
+        md (str): The markdown content to render.
+        root (str): The root directory to save output images.
+        pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
+        css (Optional[str], optional): CSS content to inject. Default: None.
+        css_path (Optional[str], optional): Path to CSS file to inject. Default: None.
+
+    Returns:
+        list[str]: List of file paths to the generated images.
+    """
+    md_renderer = (
+        MarkdownIt("commonmark")
+        .use(front_matter_plugin)
+        .use(dollarmath_plugin)
+        .use(footnote_plugin)
+        .enable("table")
+    )
+    html = md_renderer.render(md)
     return html2image(html, root, pdf_args=pdf_args, css=css, css_path=css_path)
