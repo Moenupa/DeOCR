@@ -46,6 +46,12 @@ def html2image(
 
     Returns:
         list[str]: List of file paths to the generated images.
+
+    Examples::
+
+        >>> # instantiate the renderer and close it after use:
+        >>> renderer = PlaywrightSyncRenderer()
+        >>> image_paths = renderer.markdown2image("<h1>Hello World</h1>", root="./output")
     """
 
     _page.reload(wait_until="commit")
@@ -121,6 +127,12 @@ def markdown2image(
 
     Returns:
         list[str]: List of file paths to the generated images.
+
+    Examples::
+
+        >>> # instantiate the renderer and close it after use:
+        >>> renderer = PlaywrightSyncRenderer()
+        >>> image_paths = renderer.markdown2image("# Hello World", root="./output")
     """
     md_renderer = (
         MarkdownIt("commonmark")
