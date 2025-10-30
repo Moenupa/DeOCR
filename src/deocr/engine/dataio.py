@@ -1,5 +1,18 @@
-import os
-import os.path as osp
+import hashlib
+
+
+def get_identifier(msg: str, *configs) -> str:
+    """
+    Generate a unique identifier for a given message.
+
+    Args:
+        msg (str): message
+
+    Returns:
+        str: identifier
+    """
+    msg += "".join([str(c) for c in configs])
+    return hashlib.md5(msg.encode()).hexdigest()[:32]
 
 
 def text2md(
@@ -31,33 +44,3 @@ def text2md(
             raise ValueError(f"Unsupported image type: {type(img)}")
         context = context.replace("<image>", img_md, 1)
     return context
-
-
-def md2image(
-    md_text: str,
-    out_path: str,
-    height: int = 512,
-    width: int = 512,
-    css: str = None,
-    css_path: str = None,
-    overwrite: bool = False,
-) -> None:
-    # prepare dirs
-    parent_dir = osp.dirname(out_path)
-    if not osp.exists(parent_dir):
-        os.makedirs(parent_dir)
-
-    from .md2img import sync_api as md2img
-
-    # if exists, treat as ready and do nothing
-    if not overwrite and osp.exists(out_path):
-        return
-
-    md2img.markdown2image(
-        md_text,
-        out_path,
-        width=width,
-        height=height,
-        css=css,
-        css_path=css_path,
-    )
