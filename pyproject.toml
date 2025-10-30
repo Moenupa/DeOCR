@@ -21,7 +21,17 @@ dependencies = [
     "jsonargparse[signatures]>=4.26.1",
     "datasets",
     "markdown",
-    "playwright>=1.49.1,<1.56.0",
+]
+
+[project.optional-dependencies]
+playwright = [
+    "playwright>=1.49.1,<1.56.0"
+]
+reportlab = [
+    "reportlab>=4.4.4"
+]
+pymupdf = [
+    "pymupdf",
 ]
 
 [dependency-groups]
