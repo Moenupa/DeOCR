@@ -12,7 +12,7 @@ from deocr.engine.playwright.sync_api import markdown2image
 
 @pytest.fixture
 def temp_output_dir():
-    d = ".cache/"
+    d = ".cache/pl_sync/"
     yield d
     shutil.rmtree(d)
 
