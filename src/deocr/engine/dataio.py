@@ -66,3 +66,14 @@ def text2md(
             raise ValueError(f"Unsupported image type: {type(img)}")
         context = context.replace("<image>", img_md, 1)
     return context
+
+
+def item2md(item: str | dict) -> str:
+    if isinstance(item, str):
+        # if item is str, treat it as markdown content directly
+        md = item
+    elif isinstance(item, dict):
+        md = " ".join(str(v) for v in item.values())
+    else:
+        raise TypeError(f"Unsupported item type: {type(item)}")
+    return md

@@ -2,7 +2,8 @@
 import os
 import os.path as osp
 from asyncio import Future
-from typing import Any, TypedDict
+from glob import glob
+from typing import TypedDict
 
 from playwright._impl._api_structures import PdfMargins
 from playwright.async_api import (
@@ -19,7 +20,8 @@ except ImportError:
     pymupdf = None
 
 from ..args import PDFArgs
-from ..dataio import get_identifier
+from ..dataio import get_identifier, item2md
+from ..defaults import MAX_ASYNC_PAGES
 from .md2html import md2html_async
 from .pdf2image import get_image_path, pdf2image
 
@@ -87,13 +89,8 @@ _playwright: Playwright
 _browser: Browser
 _context: BrowserContext
 _manager: IdlePagesManager
-initialized: bool | Future[bool] = (
-    False  # False: not initialized; True: initialized; Future[bool]: initializing
-)
-
-# config vars
-# modify max_pages before first convertion/screenshot, modification later then will not take effect
-max_pages: int = int(os.getenv("MAX_PAGES", 20))
+# False: not initialized; True: initialized; Future[bool]: initializing
+initialized: bool | Future[bool] = False
 
 
 async def _init():
@@ -102,7 +99,9 @@ async def _init():
     _playwright = await async_playwright().start()
     _browser = await _playwright.chromium.launch()
     _context = await _browser.new_context(viewport={"width": 512, "height": 512})
-    _manager = IdlePagesManager(max_pages)
+    # config vars
+    # modify max_pages before first convertion/screenshot, modification later then will not take effect
+    _manager = IdlePagesManager(MAX_ASYNC_PAGES)
     initialized.set_result(True)
     initialized = True
 
@@ -122,7 +121,7 @@ async def html2image(
         pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
 
     Returns:
-        list[str | Image]: List of file paths to the generated images.
+        tuple[str | Image]: Tuple of file paths to the generated images.
 
     Examples::
 
@@ -159,6 +158,10 @@ async def html2image(
     # prepare output dir
     subfolder_name = get_identifier(html, pdf_args)
     subfolder = f"{root}/{subfolder_name}"
+    if osp.exists(subfolder) and not pdf_args.overwrite:
+        cached_files = glob(f"{subfolder}/*.{pdf_args.extension}")
+        if len(cached_files) > 0:
+            return tuple(sorted(cached_files))
     if not osp.exists(subfolder):
         os.makedirs(subfolder)
 
@@ -170,7 +173,7 @@ async def html2image(
         )
         # release page to idle pages
         _manager.set_page_status(status_page["id"], False)
-        return [path]
+        return (path,)
 
     # export as pdf and then convert to images
     pdf_bytes = await page.pdf(
@@ -229,33 +232,27 @@ async def markdown2image(
 
 
 async def transform(
-    item: dict[str, Any],
-    feed_columns: list[str],
-    deocr_column: str,
+    item: str | dict,
     cache_dir: str,
     pdf_args: PDFArgs,
-) -> dict[str, Any]:
+):
     """
     Transform a single data item by converting specified text columns to images.
 
     Args:
         item (dict): Data item containing text fields.
-        feed_columns (list[str]): Column IDs to consume, converting from markdown to images.
-        deocr_column (str): Column ID for DeOCRed output.
         cache_dir (str): Directory to cache generated images.
         pdf_args (PDFArgs): PDF and rendering options.
 
     Returns:
-        dict: The transformed data item with image paths.
+        tuple: A dict containing the DeOCRed images, an iterable of image paths or objects.
     """
-    # join specified columns to markdown
-    md = " ".join(str(item[col]) for col in feed_columns if col in item)
+    md = item2md(item)
 
     # convert md to image via async markdown2image function
     deocr_ed = await markdown2image(md, root=cache_dir, pdf_args=pdf_args)
 
-    # return a dict with deocr_ed
-    return {deocr_column: deocr_ed}
+    return deocr_ed
 
 
 if __name__ == "__main__":

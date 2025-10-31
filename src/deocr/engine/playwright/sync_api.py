@@ -2,7 +2,6 @@
 import os
 import os.path as osp
 from glob import glob
-from typing import Any
 
 from playwright._impl._api_structures import PdfMargins
 from playwright.sync_api import Playwright, sync_playwright
@@ -12,7 +11,7 @@ try:
 except ImportError:
     pymupdf = None
 from ..args import PDFArgs
-from ..dataio import get_identifier
+from ..dataio import get_identifier, item2md
 from .md2html import md2html
 from .pdf2image import get_image_path, pdf2image
 
@@ -68,7 +67,7 @@ def html2image(
     if osp.exists(subfolder) and not pdf_args.overwrite:
         cached_files = glob(f"{subfolder}/*.{pdf_args.extension}")
         if len(cached_files) > 0:
-            return sorted(cached_files)
+            return tuple(sorted(cached_files))
     if not osp.exists(subfolder):
         os.makedirs(subfolder)
 
@@ -78,7 +77,7 @@ def html2image(
         _page.screenshot(
             path=path, full_page=pdf_args.autoAdjustHeight or height is None
         )
-        return [path]
+        return (path,)
 
     # export as pdf and then convert to images
     pdf_bytes = _page.pdf(
@@ -121,7 +120,7 @@ def markdown2image(
         pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
 
     Returns:
-        list[str | Image]: List of file paths to the generated images.
+        tuple[str | Image]: List of file paths to the generated images.
 
     Examples::
 
@@ -134,30 +133,24 @@ def markdown2image(
 
 
 def transform(
-    item: dict[str, Any],
-    feed_columns: list[str],
-    deocr_column: str,
+    item: str | dict,
     cache_dir: str,
     pdf_args: PDFArgs,
-) -> dict[str, Any]:
+):
     """
     Transform a single data item by converting specified text columns to images.
 
     Args:
         item (dict): Data item containing text fields.
-        feed_columns (list[str]): Column IDs to consume, converting from markdown to images.
-        deocr_column (str): Column ID for DeOCRed output.
         cache_dir (str): Directory to cache generated images.
         pdf_args (PDFArgs): PDF and rendering options.
 
     Returns:
-        dict: The transformed data item with image paths.
+        tuple: A dict containing the DeOCRed images, an iterable of image paths or objects.
     """
-    # join specified columns to markdown
-    md = " ".join(str(item[col]) for col in feed_columns if col in item)
+    md = item2md(item)
 
     # convert md to image via async markdown2image function
     deocr_ed = markdown2image(md, root=cache_dir, pdf_args=pdf_args)
 
-    # return a dict with deocr_ed
-    return {deocr_column: deocr_ed}
+    return deocr_ed
