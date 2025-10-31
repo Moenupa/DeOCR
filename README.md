@@ -36,7 +36,7 @@ flowchart LR
 # Quick Start
 
 ```sh
-pip install deocr
+pip install deocr[playwright,pymupdf]
 # activate your python environment, then install playwright deps
 playwright install chromium
 ```
@@ -45,9 +45,7 @@ playwright install chromium
 
 ```sh
 # uv
-uv add "deocr @ git+https://github.com/Moenupa/DeOCR.git"
-# for pip or conda
-pip install "git+https://github.com/Moenupa/DeOCR.git"
+uv add "deocr[playwright,pymupdf] @ git+https://github.com/Moenupa/DeOCR.git"
 # activate your python environment, then install playwright deps
 playwright install chromium
 ```
@@ -62,10 +60,16 @@ Please use uv to manage the environment:
 git clone https://github.com/Moenupa/DeOCR.git
 cd DeOCR
 uv venv
-uv sync --dev
+uv sync --all-extras --all-groups
 source .venv/bin/activate
 playwright install chromium
 pre-commit install
 ```
+
+</details>
+
+<details><summary>Known Issues</summary>
+
+- async function timeout: increase threshold 0.05 at [datasets/utils/py_utils.py:612-626](./.venv/lib/python3.12/site-packages/datasets/utils/py_utils.py)
 
 </details>

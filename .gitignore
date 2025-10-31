@@ -3,6 +3,8 @@
 
 # for dev
 backup
+logs
+slurm
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
