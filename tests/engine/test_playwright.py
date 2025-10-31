@@ -16,9 +16,9 @@ def temp_output_dir():
     yield d
 
 
-@pytest.fixture
-def cleanup():
-    yield True
+def cleanup_subfolder(subfolder: str, cleanup: bool):
+    if cleanup and osp.exists(subfolder):
+        shutil.rmtree(subfolder)
 
 
 SAMPLE_TEXT = r"""# Heading H1
@@ -119,5 +119,4 @@ def test_md2image(
         for i in range(1, len(save_paths)):
             assert osp.dirname(save_paths[i]) == subfolder
 
-    if cleanup:
-        shutil.rmtree(subfolder)
+    cleanup_subfolder(subfolder, cleanup)

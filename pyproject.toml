@@ -52,3 +52,6 @@ Issues = "https://github.com/Moenupa/DeOCR/issues"
 
 [tool.pytest.ini_options]
 addopts = "--ignore=tests/async/"
+markers = [
+    "nocleanup: mark test to skip cleanup fixture",
+]
