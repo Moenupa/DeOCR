@@ -45,7 +45,7 @@ def pdf2image(
             it = _worker(
                 (pdf_bytes, subfolder, dpi, extension, save_images, 0, n_pages)
             )
-            return [it]
+            return (it,)
 
     # distribute saving work using tqdm
     out = process_map(
@@ -57,4 +57,4 @@ def pdf2image(
         max_workers=None if MAX_WORKERS is None else min(n_pages, MAX_WORKERS),
         chunksize=1,
     )
-    return out
+    return tuple(out)

@@ -102,7 +102,7 @@ def test_md2image(
         assert osp.exists(css_path)
 
     pdf_args = PDFArgs(
-        pagesize=(width, height), css=css, css_path=css_path, savePDF=True
+        pagesize=(width, height), css=css, css_path=css_path, dpi=96, savePDF=True
     )
 
     save_paths = markdown2image(
@@ -140,7 +140,7 @@ def test_transform(
         "answer": "42",
     }
 
-    pdf_args = PDFArgs(pagesize=(512, 512), savePDF=True)
+    pdf_args = PDFArgs(pagesize=(512, 512), dpi=72, savePDF=True)
 
     out = transform(
         item=item,
@@ -155,7 +155,7 @@ def test_transform(
 
     # check deocr_column value
     img_paths = out[deocr_column]
-    assert isinstance(img_paths, list)
+    assert isinstance(img_paths, tuple)
     assert len(img_paths) > 0
     for img_path in img_paths:
         assert osp.exists(img_path)
