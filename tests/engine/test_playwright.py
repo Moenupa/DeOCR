@@ -7,7 +7,7 @@ import pytest
 from PIL import Image
 
 from deocr.engine.args import PDFArgs
-from deocr.engine.playwright.sync_api import markdown2image
+from deocr.engine.playwright.sync_api import markdown2image, transform
 
 
 @pytest.fixture
@@ -126,4 +126,39 @@ def test_md2image(
         for i in range(1, len(save_paths)):
             assert osp.dirname(save_paths[i]) == subfolder
 
+    cleanup_subfolder(subfolder, cleanup)
+
+
+@pytest.mark.parametrize(
+    "feed_columns,deocr_column", [(["question"], "question_processed")]
+)
+def test_transform(
+    feed_columns: list[str], deocr_column: str, temp_output_dir: str, cleanup: bool
+):
+    item = {
+        "question": generate_random_string(),
+        "answer": "42",
+    }
+
+    pdf_args = PDFArgs(pagesize=(512, 512), savePDF=True)
+
+    out = transform(
+        item=item,
+        feed_columns=feed_columns,
+        deocr_column=deocr_column,
+        cache_dir=temp_output_dir,
+        pdf_args=pdf_args,
+    )
+
+    # check output keys
+    assert out.keys() == {deocr_column}
+
+    # check deocr_column value
+    img_paths = out[deocr_column]
+    assert isinstance(img_paths, list)
+    assert len(img_paths) > 0
+    for img_path in img_paths:
+        assert osp.exists(img_path)
+
+    subfolder = osp.dirname(img_paths[0])
     cleanup_subfolder(subfolder, cleanup)
