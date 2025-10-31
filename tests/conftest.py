@@ -1,5 +1,6 @@
-import pytest
 import argparse
+
+import pytest
 
 
 def pytest_addoption(parser: pytest.Parser):
