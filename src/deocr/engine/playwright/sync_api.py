@@ -2,6 +2,7 @@
 import os
 import os.path as osp
 from glob import glob
+from typing import Any
 
 from playwright._impl._api_structures import PdfMargins
 from playwright.sync_api import Playwright, sync_playwright
@@ -129,3 +130,36 @@ def markdown2image(
     """
     html = md2html(md)
     return html2image(html, root, pdf_args=pdf_args)
+
+
+def transform(
+    item: dict[str, Any],
+    feed_columns: list[str],
+    feed_img_column: str,
+    deocr_column: str,
+    cache_dir: str,
+    pdf_args: PDFArgs,
+) -> dict[str, Any]:
+    """
+    Transform a single data item by converting specified text columns to images.
+
+    Args:
+        item (dict): Data item containing text fields.
+        feed_columns (list[str]): Column IDs to consume, converting from markdown to images.
+        feed_img_column (str): Column ID to consume, embedding images in results.
+        deocr_column (str): Column ID for DeOCRed output.
+        cache_dir (str): Directory to cache generated images.
+        pdf_args (PDFArgs): PDF and rendering options.
+
+    Returns:
+        dict: The transformed data item with image paths.
+    """
+    # join specified columns to markdown
+    md = " ".join(str(item.pop(col)) for col in feed_columns if col in item)
+
+    # convert md to image via async markdown2image function
+    deocr_ed = markdown2image(md, root=cache_dir, pdf_args=pdf_args)
+
+    # return a dict with deocr_ed and feed_img_column
+    out = item | {deocr_column: deocr_ed}
+    return out
