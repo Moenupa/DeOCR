@@ -10,7 +10,7 @@ authors = [
 ]
 description = "A reverse OCR tool that renders huggingface-compatible datasets to images of specified sizes (e.g., `512x512`)."
 readme = "README.md"
-requires-python = ">=3.9,<3.14"
+requires-python = ">=3.9,<3.15"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
