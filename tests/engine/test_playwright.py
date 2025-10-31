@@ -130,32 +130,28 @@ def test_md2image(
 
 
 @pytest.mark.parametrize(
-    "feed_columns,deocr_column", [(["question"], "question_processed")]
+    "item",
+    [
+        generate_random_string(),
+        {
+            "question": generate_random_string(),
+            "answer": "42",
+        },
+    ],
 )
-def test_transform(
-    feed_columns: list[str], deocr_column: str, temp_output_dir: str, cleanup: bool
-):
-    item = {
-        "question": generate_random_string(),
-        "answer": "42",
-    }
-
+def test_transform(item, temp_output_dir: str, cleanup: bool):
     pdf_args = PDFArgs(pagesize=(512, 512), dpi=72, savePDF=True)
 
-    out = transform(
+    img_paths = transform(
         item=item,
-        feed_columns=feed_columns,
-        deocr_column=deocr_column,
         cache_dir=temp_output_dir,
         pdf_args=pdf_args,
     )
 
     # check output keys
-    assert out.keys() == {deocr_column}
-
-    # check deocr_column value
-    img_paths = out[deocr_column]
     assert isinstance(img_paths, tuple)
+
+    # check image paths
     assert len(img_paths) > 0
     for img_path in img_paths:
         assert osp.exists(img_path)
