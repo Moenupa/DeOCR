@@ -14,7 +14,11 @@ from deocr.engine.playwright.sync_api import markdown2image
 def temp_output_dir():
     d = ".cache/pl_sync/"
     yield d
-    shutil.rmtree(d)
+
+
+@pytest.fixture
+def cleanup():
+    yield True
 
 
 SAMPLE_TEXT = r"""# Heading H1
@@ -81,7 +85,13 @@ def generate_random_string(length: int = None) -> str:
     ],
 )
 def test_md2image(
-    text: str, width: int, height: int, css: str, css_path: str, temp_output_dir: str
+    text: str,
+    width: int,
+    height: int,
+    css: str,
+    css_path: str,
+    temp_output_dir: str,
+    cleanup: bool,
 ):
     if css_path is not None:
         assert osp.exists(css_path)
@@ -105,3 +115,11 @@ def test_md2image(
                 assert actual_width == width
             if height is not None:
                 assert actual_height == height
+
+    subfolder = osp.dirname(save_paths[0])
+    if len(save_paths) == 1:
+        for i in range(1, len(save_paths)):
+            assert osp.dirname(save_paths[i]) == subfolder
+
+    if cleanup:
+        shutil.rmtree(subfolder)

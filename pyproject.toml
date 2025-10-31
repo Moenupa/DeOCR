@@ -41,6 +41,7 @@ dev = [
     "pre-commit>=4.3.0",
     "pytest>=8.4.2",
     "pytest-asyncio",
+    "pytest-xdist",
     "ruff>=0.14.2",
     "build",
 ]
