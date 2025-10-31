@@ -1,4 +1,26 @@
 import hashlib
+import os.path as osp
+import re
+
+RE_EXTRACT_PATTERN = re.compile(r"\d{10}-(\d{10})\.\w+")
+
+
+def get_image_path(subfolder: str, i: int, total: int, extension: str) -> str:
+    """
+    ``return f'{subfolder}/{i:010d}-{total:010d}.{extension}'``
+    """
+    return f"{subfolder}/{i:010d}-{total:010d}.{extension}"
+
+
+def get_n_images(image_path: str) -> int:
+    """
+    ``extract total from f'{subfolder}/{i:010d}-{total:010d}.{extension}'``
+    """
+    filename = osp.basename(image_path)
+    match = RE_EXTRACT_PATTERN.match(filename)
+    assert match is not None
+    total_str = match.group(1)
+    return int(total_str)
 
 
 def get_identifier(msg: str, *configs) -> str:

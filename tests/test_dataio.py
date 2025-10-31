@@ -1,6 +1,6 @@
 import pytest
 
-from deocr.engine.dataio import get_identifier, text2md
+from deocr.engine.dataio import get_identifier, get_image_path, get_n_images, text2md
 
 
 @pytest.mark.parametrize(
@@ -42,4 +42,43 @@ def test_text2md(context: str, images: list[dict | str], expected: str):
 )
 def test_get_identifier(text: str, expected: str):
     actual = get_identifier(text)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "image_path,expected",
+    [
+        ("/path/to/0a1addf0f4d7cd3a633241d8062df321/0000000000-0000000001.jpg", 1),
+        (
+            ".cache/gsm8k/0a0895539aef442771b941785bcee4ee/0000008200-0000008201.jpg",
+            8201,
+        ),
+    ],
+)
+def test_get_n_images(image_path: str, expected: int):
+    actual = get_n_images(image_path)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "folder,i,total,extension,expected",
+    [
+        (
+            "/path/to/0a1addf0f4d7cd3a633241d8062df321",
+            0,
+            1,
+            "jpg",
+            "/path/to/0a1addf0f4d7cd3a633241d8062df321/0000000000-0000000001.jpg",
+        ),
+        (
+            ".cache/gsm8k/0a0895539aef442771b941785bcee4ee",
+            8200,
+            8201,
+            "png",
+            ".cache/gsm8k/0a0895539aef442771b941785bcee4ee/0000008200-0000008201.png",
+        ),
+    ],
+)
+def test_get_image_path(folder: str, i: int, total: int, extension: str, expected: str):
+    actual = get_image_path(folder, i, total, extension)
     assert actual == expected
