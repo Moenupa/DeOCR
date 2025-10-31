@@ -29,15 +29,10 @@ SAMPLE_TEXT = r"""# Heading H1
 
 - *Italic*  
 - **Bold**  
-- ***Bold + Italic***  
+  - ***Bold + Italic***  
 - ~~Strikethrough~~  
 
 ---
-
-- Item 1
-  - Sub‑item A
-  - Sub‑item B
-- Item 2
 
 1. First
 2. Second
@@ -46,7 +41,7 @@ SAMPLE_TEXT = r"""# Heading H1
 
 ---
 
-[OpenAI](https://openai.com)
+[OpenAI](https://openai.com) and raw links https://google.com
 
 ![Placeholder Image](https://picsum.photos/200 "Alt text")
 
@@ -58,6 +53,16 @@ Use the `printf()` function or some math $E=mc^2$.
 def hello(name: str) -> None:
     print(f"Hello, {name}!")
 ```
+
+$$
+e^{i\pi} + 1 = 0
+$$
+
+---
+
+| Column 1 | Column 2 | Column 3 |
+|----------|:--------:|---------:|
+| Left     | Center   | Right    |
 """
 
 
@@ -96,7 +101,9 @@ def test_md2image(
     if css_path is not None:
         assert osp.exists(css_path)
 
-    pdf_args = PDFArgs(pagesize=(width, height), css=css, css_path=css_path)
+    pdf_args = PDFArgs(
+        pagesize=(width, height), css=css, css_path=css_path, savePDF=True
+    )
 
     save_paths = markdown2image(
         text,

@@ -4,10 +4,6 @@ import os.path as osp
 from asyncio import Future
 from typing import TypedDict
 
-from markdown_it import MarkdownIt
-from mdit_py_plugins.dollarmath import dollarmath_plugin
-from mdit_py_plugins.footnote import footnote_plugin
-from mdit_py_plugins.front_matter import front_matter_plugin
 from playwright._impl._api_structures import PdfMargins
 from playwright.async_api import (
     Browser,
@@ -24,6 +20,7 @@ except ImportError:
 
 from ..args import PDFArgs
 from ..dataio import get_identifier
+from .md2html import md2html_async
 from .pdf2image import get_image_path, pdf2image_async
 
 
@@ -179,7 +176,7 @@ async def html2image(
 
     # export as pdf and then convert to images
     pdf_bytes = await page.pdf(
-        # path=f"{subfolder}/.pdf" if pdf_args.savePDF else None,
+        path=f"{subfolder}/.pdf" if pdf_args.savePDF else None,
         scale=1,
         header_template=None,
         footer_template=None,
@@ -230,14 +227,7 @@ async def markdown2image(
         >>> renderer = PlaywrightAsyncRenderer()
         >>> image_paths = await renderer.markdown2image("# Hello World", root="./output")
     """
-    md_renderer = (
-        MarkdownIt("commonmark")
-        .use(front_matter_plugin)
-        .use(dollarmath_plugin)
-        .use(footnote_plugin)
-        .enable("table")
-    )
-    html = md_renderer.render(md)
+    html = await md2html_async(md)
     return await html2image(html, root, pdf_args=pdf_args)
 
 

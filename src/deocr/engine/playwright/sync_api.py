@@ -3,10 +3,6 @@ import os
 import os.path as osp
 from glob import glob
 
-from markdown_it import MarkdownIt
-from mdit_py_plugins.dollarmath import dollarmath_plugin
-from mdit_py_plugins.footnote import footnote_plugin
-from mdit_py_plugins.front_matter import front_matter_plugin
 from playwright._impl._api_structures import PdfMargins
 from playwright.sync_api import Playwright, sync_playwright
 
@@ -16,6 +12,7 @@ except ImportError:
     pymupdf = None
 from ..args import PDFArgs
 from ..dataio import get_identifier
+from .md2html import md2html
 from .pdf2image import get_image_path, pdf2image
 
 # Init browser and context
@@ -86,7 +83,7 @@ def html2image(
 
     # export as pdf and then convert to images
     pdf_bytes = _page.pdf(
-        # path=f"{subfolder}/.pdf" if pdf_args.savePDF else None,
+        path=f"{subfolder}/.pdf" if pdf_args.savePDF else None,
         scale=1,
         header_template=None,
         footer_template=None,
@@ -134,12 +131,5 @@ def markdown2image(
         >>> renderer = PlaywrightSyncRenderer()
         >>> image_paths = renderer.markdown2image("# Hello World", root="./output")
     """
-    md_renderer = (
-        MarkdownIt("commonmark")
-        .use(front_matter_plugin)
-        .use(dollarmath_plugin)
-        .use(footnote_plugin)
-        .enable("table")
-    )
-    html = md_renderer.render(md)
+    html = md2html(md)
     return html2image(html, root, pdf_args=pdf_args)

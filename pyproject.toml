@@ -21,7 +21,7 @@ dependencies = [
     "jsonargparse[signatures]>=4.26.1",
     "datasets",
     "markdown-it-py>=3.0.0",
-    "mdit-py-plugins>=0.4.2",
+    "linkify-it-py",
 ]
 
 [project.optional-dependencies]
