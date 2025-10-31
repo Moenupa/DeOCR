@@ -2,7 +2,7 @@
 import os
 import os.path as osp
 from asyncio import Future
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 from markdown_it import MarkdownIt
 from mdit_py_plugins.dollarmath import dollarmath_plugin
@@ -17,14 +17,14 @@ from playwright.async_api import (
     async_playwright,
 )
 
-from ..dataio import get_identifier
-
 try:
     import pymupdf
 except ImportError:
     pymupdf = None
 
 from ..args import PDFArgs
+from ..dataio import get_identifier
+from .pdf2image import get_image_path, pdf2image_async
 
 
 # Init browser and context
@@ -115,8 +115,6 @@ async def html2image(
     root: str,
     *,
     pdf_args: PDFArgs = PDFArgs(),
-    css: Optional[str] = None,
-    css_path: Optional[str] = None,
 ) -> list[str]:
     """
     Render HTML content to image(s) using Playwright.
@@ -158,10 +156,10 @@ async def html2image(
     await page.set_content(html=html, wait_until="load")
 
     # inject css if any
-    if css:
-        await page.add_style_tag(content=css)
-    if css_path:
-        await page.add_style_tag(path=css_path)
+    if pdf_args.css is not None:
+        await page.add_style_tag(content=pdf_args.css)
+    if pdf_args.css_path is not None:
+        await page.add_style_tag(path=pdf_args.css_path)
 
     # prepare output dir
     subfolder_name = get_identifier(html, pdf_args)
@@ -171,7 +169,7 @@ async def html2image(
 
     # take screenshot
     if pymupdf is None or pdf_args.forceOnePage:
-        path = f"{subfolder}/{0:010d}.png"
+        path = get_image_path(subfolder, 0, 1, pdf_args.extension)
         await page.screenshot(
             path=path, full_page=pdf_args.autoAdjustHeight or height is None
         )
@@ -196,15 +194,15 @@ async def html2image(
             right=f"{pdf_args.marginRight}px",
         ),
     )
-    pdf_doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
-    for i in range(len(pdf_doc)):
-        page_pdf = pdf_doc.load_page(i)
-        pix = page_pdf.get_pixmap(dpi=pdf_args.dpi)
-        pix.save(f"{subfolder}/{i:010d}.png")
-
+    image_paths = await pdf2image_async(
+        pdf_bytes=pdf_bytes,
+        subfolder=subfolder,
+        dpi=pdf_args.dpi,
+        extension=pdf_args.extension,
+    )
     # release page to idle pages
     _manager.set_page_status(status_page["id"], False)
-    return [f"{subfolder}/{i:010d}.png" for i in range(len(pdf_doc))]
+    return image_paths
 
 
 async def markdown2image(
@@ -212,8 +210,6 @@ async def markdown2image(
     root: str,
     *,
     pdf_args: PDFArgs = PDFArgs(),
-    css: Optional[str] = None,
-    css_path: Optional[str] = None,
 ) -> list[str]:
     """
     Render markdown content to image(s) using Playwright.
@@ -242,7 +238,7 @@ async def markdown2image(
         .enable("table")
     )
     html = md_renderer.render(md)
-    return await html2image(html, root, pdf_args=pdf_args, css=css, css_path=css_path)
+    return await html2image(html, root, pdf_args=pdf_args)
 
 
 if __name__ == "__main__":

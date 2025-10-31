@@ -17,12 +17,6 @@ class PDFArgs:
             "help": "A list of `PageTemplate` objects that define how frames (text columns, images, etc.) are laid out on each page and what happens on a page‑break. Empty list → a single default template is created automatically."
         },
     )
-    showBoundary: int = field(
-        default=0,
-        metadata={
-            "help": "If true, the borders of every `Frame` are drawn (thin red lines) – handy for debugging layout."
-        },
-    )
     marginLeft: float = field(
         default=0,
         metadata={"help": "Left margin in points."},
@@ -50,40 +44,6 @@ class PDFArgs:
         default=0,
         metadata={
             "help": "Whole‑page rotation in degrees (0, 90, 180, 270). The page is rotated after it is drawn, so text stays upright relative to the new orientation."
-        },
-    )
-    cropMarks: Optional[Any] = field(
-        default=None,
-        metadata={
-            "help": "If supplied, a CropMarks object is used to draw printer’s crop marks on each page."
-        },
-    )
-    enforceColorSpace: Optional[Any] = field(
-        default=None,
-        metadata={
-            "help": "When set to 'RGB' or 'CMYK' forces all images and colors to be converted to that colour space, useful for press‑ready PDFs."
-        },
-    )
-    cropBox: Optional[Any] = field(
-        default=None,
-        metadata={
-            "help": "Optional PDF page boxes that define the printable area (CropBox)."
-        },
-    )
-    artBox: Optional[Any] = field(
-        default=None,
-        metadata={"help": "Optional PDF page boxes that define the art area."},
-    )
-    trimBox: Optional[Any] = field(
-        default=None,
-        metadata={
-            "help": "Optional PDF page boxes that define the trim area (for cutting)."
-        },
-    )
-    bleedBox: Optional[Any] = field(
-        default=None,
-        metadata={
-            "help": "Optional PDF page boxes that define the bleed area (extra margin for printing)."
         },
     )
 
@@ -114,11 +74,30 @@ class PDFArgs:
     )
     savePDF: bool = field(
         default=False,
-        metadata={"help": "If true, saves the generated PDF to disk."},
+        metadata={
+            "help": "If true, saves the generated PDF to disk. This is only for debugging since PDF is converted in-memory to images."
+        },
     )
 
-    # dpi
     dpi: int = field(
         default=96,
         metadata={"help": "Dots per inch for image rendering."},
+    )
+
+    overwrite: bool = field(
+        default=True,
+        metadata={"help": "If true, overwrites existing directory."},
+    )
+    extension: str = field(
+        default="jpg",
+        metadata={"help": "File extension for output images."},
+    )
+
+    css: Optional[str] = field(
+        default=None,
+        metadata={"help": "CSS styles to apply when rendering."},
+    )
+    css_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Path to a CSS file to apply when rendering."},
     )

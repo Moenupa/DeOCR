@@ -108,15 +108,13 @@ async def test_md2image(
     if css_path is not None:
         assert osp.exists(css_path)
 
-    pdf_args = PDFArgs(pagesize=(width, height))
+    pdf_args = PDFArgs(pagesize=(width, height), css=css, css_path=css_path)
 
     dirname = temp_output_dir
     save_paths = await markdown2image(
         text,
         dirname,
         pdf_args=pdf_args,
-        css=css,
-        css_path=css_path,
     )
     for each_image in save_paths:
         assert osp.exists(each_image)

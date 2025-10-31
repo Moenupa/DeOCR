@@ -96,14 +96,12 @@ def test_md2image(
     if css_path is not None:
         assert osp.exists(css_path)
 
-    pdf_args = PDFArgs(pagesize=(width, height))
+    pdf_args = PDFArgs(pagesize=(width, height), css=css, css_path=css_path)
 
     save_paths = markdown2image(
         text,
         temp_output_dir,
         pdf_args=pdf_args,
-        css=css,
-        css_path=css_path,
     )
     for each_image in save_paths:
         assert osp.exists(each_image)

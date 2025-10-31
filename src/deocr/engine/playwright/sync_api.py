@@ -1,7 +1,7 @@
 # credit: https://github.com/PYUDNG/markdown2image
 import os
 import os.path as osp
-from typing import Optional
+from glob import glob
 
 from markdown_it import MarkdownIt
 from mdit_py_plugins.dollarmath import dollarmath_plugin
@@ -10,14 +10,13 @@ from mdit_py_plugins.front_matter import front_matter_plugin
 from playwright._impl._api_structures import PdfMargins
 from playwright.sync_api import Playwright, sync_playwright
 
-from ..dataio import get_identifier
-
 try:
     import pymupdf
 except ImportError:
     pymupdf = None
-
 from ..args import PDFArgs
+from ..dataio import get_identifier
+from .pdf2image import get_image_path, pdf2image
 
 # Init browser and context
 _playwright: Playwright = sync_playwright().start()
@@ -31,8 +30,6 @@ def html2image(
     root: str,
     *,
     pdf_args: PDFArgs = PDFArgs(),
-    css: Optional[str] = None,
-    css_path: Optional[str] = None,
 ) -> list[str]:
     """
     Render HTML content to image(s) using Playwright.
@@ -63,20 +60,25 @@ def html2image(
     _page.set_content(html=html, wait_until="load")
 
     # inject css if any
-    if css:
-        _page.add_style_tag(content=css)
-    if css_path:
-        _page.add_style_tag(path=css_path)
+    if pdf_args.css is not None:
+        _page.add_style_tag(content=pdf_args.css)
+    if pdf_args.css_path is not None:
+        _page.add_style_tag(path=pdf_args.css_path)
 
     # prepare output dir
     subfolder_name = get_identifier(html, pdf_args)
     subfolder = f"{root}/{subfolder_name}"
+    # use cache when exists, if found, skip rendering
+    if osp.exists(subfolder) and not pdf_args.overwrite:
+        cached_files = glob(f"{subfolder}/*.{pdf_args.extension}")
+        if len(cached_files) > 0:
+            return sorted(cached_files)
     if not osp.exists(subfolder):
         os.makedirs(subfolder)
 
     # take screenshot
     if pymupdf is None or pdf_args.forceOnePage:
-        path = f"{subfolder}/{0:010d}.png"
+        path = get_image_path(subfolder, 0, 1, pdf_args.extension)
         _page.screenshot(
             path=path, full_page=pdf_args.autoAdjustHeight or height is None
         )
@@ -99,12 +101,12 @@ def html2image(
             right=f"{pdf_args.marginRight}px",
         ),
     )
-    pdf_doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
-    for i in range(len(pdf_doc)):
-        page = pdf_doc.load_page(i)
-        pix = page.get_pixmap(dpi=pdf_args.dpi)
-        pix.save(f"{subfolder}/{i:010d}.png")
-    return [f"{subfolder}/{i:010d}.png" for i in range(len(pdf_doc))]
+    return pdf2image(
+        pdf_bytes=pdf_bytes,
+        subfolder=subfolder,
+        dpi=pdf_args.dpi,
+        extension=pdf_args.extension,
+    )
 
 
 def markdown2image(
@@ -112,8 +114,6 @@ def markdown2image(
     root: str,
     *,
     pdf_args: PDFArgs = PDFArgs(),
-    css: Optional[str] = None,
-    css_path: Optional[str] = None,
 ) -> list[str]:
     """
     Render markdown content to image(s) using Playwright.
@@ -142,4 +142,4 @@ def markdown2image(
         .enable("table")
     )
     html = md_renderer.render(md)
-    return html2image(html, root, pdf_args=pdf_args, css=css, css_path=css_path)
+    return html2image(html, root, pdf_args=pdf_args)
