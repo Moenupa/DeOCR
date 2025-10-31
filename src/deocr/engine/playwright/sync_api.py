@@ -28,7 +28,7 @@ def html2image(
     root: str,
     *,
     pdf_args: PDFArgs = PDFArgs(),
-) -> list[str]:
+):
     """
     Render HTML content to image(s) using Playwright.
 
@@ -38,7 +38,7 @@ def html2image(
         pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
 
     Returns:
-        list[str]: List of file paths to the generated images.
+        list[str | Image]: List of file paths to the generated images.
 
     Examples::
 
@@ -102,6 +102,7 @@ def html2image(
         subfolder=subfolder,
         dpi=pdf_args.dpi,
         extension=pdf_args.extension,
+        save_images=pdf_args.saveImage,
     )
 
 
@@ -110,7 +111,7 @@ def markdown2image(
     root: str,
     *,
     pdf_args: PDFArgs = PDFArgs(),
-) -> list[str]:
+):
     """
     Render markdown content to image(s) using Playwright.
 
@@ -120,7 +121,7 @@ def markdown2image(
         pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
 
     Returns:
-        list[str]: List of file paths to the generated images.
+        list[str | Image]: List of file paths to the generated images.
 
     Examples::
 
@@ -135,7 +136,6 @@ def markdown2image(
 def transform(
     item: dict[str, Any],
     feed_columns: list[str],
-    feed_img_column: str,
     deocr_column: str,
     cache_dir: str,
     pdf_args: PDFArgs,
@@ -146,7 +146,6 @@ def transform(
     Args:
         item (dict): Data item containing text fields.
         feed_columns (list[str]): Column IDs to consume, converting from markdown to images.
-        feed_img_column (str): Column ID to consume, embedding images in results.
         deocr_column (str): Column ID for DeOCRed output.
         cache_dir (str): Directory to cache generated images.
         pdf_args (PDFArgs): PDF and rendering options.
@@ -155,11 +154,10 @@ def transform(
         dict: The transformed data item with image paths.
     """
     # join specified columns to markdown
-    md = " ".join(str(item.pop(col)) for col in feed_columns if col in item)
+    md = " ".join(str(item[col]) for col in feed_columns if col in item)
 
     # convert md to image via async markdown2image function
     deocr_ed = markdown2image(md, root=cache_dir, pdf_args=pdf_args)
 
-    # return a dict with deocr_ed and feed_img_column
-    out = item | {deocr_column: deocr_ed}
-    return out
+    # return a dict with deocr_ed
+    return {deocr_column: deocr_ed}

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -9,12 +9,6 @@ class PDFArgs:
         default=(512, 512),
         metadata={
             "help": "(width, height) of each page, expressed in points (pt). Changing this changes the physical size of the PDF pages."
-        },
-    )
-    pageTemplates: List[Any] = field(
-        default_factory=list,
-        metadata={
-            "help": "A list of `PageTemplate` objects that define how frames (text columns, images, etc.) are laid out on each page and what happens on a page‑break. Empty list → a single default template is created automatically."
         },
     )
     marginLeft: float = field(
@@ -76,6 +70,12 @@ class PDFArgs:
         default=False,
         metadata={
             "help": "If true, saves the generated PDF to disk. This is only for debugging since PDF is converted in-memory to images."
+        },
+    )
+    saveImage: bool = field(
+        default=True,
+        metadata={
+            "help": "If true, saves the generated Image to disk. If false, returns PIL Image objects in memory."
         },
     )
 
