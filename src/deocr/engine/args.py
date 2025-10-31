@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Optional
 
 
 @dataclass
@@ -28,30 +28,30 @@ class PDFArgs:
         metadata={"help": "Bottom margin in points."},
     )
 
-    invariant: Optional[Any] = field(
-        default=None,
-        metadata={
-            "help": "A user‑supplied object that will be stored unchanged on the `DocTemplate` instance; you can use it to pass any extra data you need while building the document."
-        },
-    )
-    rotation: int = field(
-        default=0,
-        metadata={
-            "help": "Whole‑page rotation in degrees (0, 90, 180, 270). The page is rotated after it is drawn, so text stays upright relative to the new orientation."
-        },
-    )
+    # invariant: Optional[Any] = field(
+    #     default=None,
+    #     metadata={
+    #         "help": "A user‑supplied object that will be stored unchanged on the `DocTemplate` instance; you can use it to pass any extra data you need while building the document."
+    #     },
+    # )
+    # rotation: int = field(
+    #     default=0,
+    #     metadata={
+    #         "help": "Whole‑page rotation in degrees (0, 90, 180, 270). The page is rotated after it is drawn, so text stays upright relative to the new orientation."
+    #     },
+    # )
 
     # layout control
-    allowSplitting: bool = field(
-        default=True,
-        metadata={
-            "help": "If false, forces each Paragraph to stay on the same page; if it doesn’t fit, it is moved to the next page."
-        },
-    )
-    keepTogetherClass: Any = field(
-        default=None,
-        metadata={"help": "How flowables are broken across pages."},
-    )
+    # allowSplitting: bool = field(
+    #     default=True,
+    #     metadata={
+    #         "help": "If false, forces each Paragraph to stay on the same page; if it doesn’t fit, it is moved to the next page."
+    #     },
+    # )
+    # keepTogetherClass: Any = field(
+    #     default=None,
+    #     metadata={"help": "How flowables are broken across pages."},
+    # )
 
     # other options
     forceOnePage: bool = field(
@@ -85,7 +85,7 @@ class PDFArgs:
     )
 
     overwrite: bool = field(
-        default=True,
+        default=False,
         metadata={"help": "If true, overwrites existing directory."},
     )
     extension: str = field(
