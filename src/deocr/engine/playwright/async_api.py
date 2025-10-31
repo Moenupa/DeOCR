@@ -120,8 +120,6 @@ async def html2image(
         html (str): The HTML content to render.
         root (str): The root directory to save output images.
         pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
-        css (Optional[str], optional): CSS content to inject. Default: None.
-        css_path (Optional[str], optional): Path to CSS file to inject. Default: None.
 
     Returns:
         list[str]: List of file paths to the generated images.
@@ -215,8 +213,6 @@ async def markdown2image(
         md (str): The markdown content to render.
         root (str): The root directory to save output images.
         pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
-        css (Optional[str], optional): CSS content to inject. Default: None.
-        css_path (Optional[str], optional): Path to CSS file to inject. Default: None.
 
     Returns:
         list[str]: List of file paths to the generated images.
