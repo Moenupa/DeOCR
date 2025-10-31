@@ -22,7 +22,7 @@ except ImportError:
 from ..args import PDFArgs
 from ..dataio import get_identifier, item2md
 from ..defaults import MAX_ASYNC_PAGES
-from .md2html import md2html_async
+from .md2html import md2html
 from .pdf2image import get_image_path, pdf2image
 
 
@@ -121,13 +121,11 @@ async def html2image(
         pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
 
     Returns:
-        tuple[str | Image]: Tuple of file paths to the generated images.
+        tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
 
     Examples::
 
-        >>> # instantiate the renderer and close it after use:
-        >>> renderer = PlaywrightAsyncRenderer()
-        >>> image_paths = await renderer.html2image("<h1>Hello World</h1>", root="./output")
+        >>> image_paths = await html2image("<h1>Hello World</h1>", root="./output")
     """
     global initialized
     if isinstance(initialized, Future):
@@ -219,15 +217,13 @@ async def markdown2image(
         pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
 
     Returns:
-        list[str | Image]: List of file paths to the generated images.
+        tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
 
     Examples::
 
-        >>> # instantiate the renderer and close it after use:
-        >>> renderer = PlaywrightAsyncRenderer()
-        >>> image_paths = await renderer.markdown2image("# Hello World", root="./output")
+        >>> image_paths = await markdown2image("# Hello World", root="./output")
     """
-    html = await md2html_async(md)
+    html = md2html(md)
     return await html2image(html, root, pdf_args=pdf_args)
 
 
@@ -245,7 +241,7 @@ async def transform(
         pdf_args (PDFArgs): PDF and rendering options.
 
     Returns:
-        tuple: A dict containing the DeOCRed images, an iterable of image paths or objects.
+        tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
     """
     md = item2md(item)
 

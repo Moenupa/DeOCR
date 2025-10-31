@@ -37,13 +37,11 @@ def html2image(
         pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
 
     Returns:
-        list[str | Image]: List of file paths to the generated images.
+        tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
 
     Examples::
 
-        >>> # instantiate the renderer and close it after use:
-        >>> renderer = PlaywrightSyncRenderer()
-        >>> image_paths = renderer.markdown2image("<h1>Hello World</h1>", root="./output")
+        >>> image_paths = html2image("<h1>Hello World</h1>", root="./output")
     """
 
     _page.reload(wait_until="commit")
@@ -120,13 +118,11 @@ def markdown2image(
         pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
 
     Returns:
-        tuple[str | Image]: List of file paths to the generated images.
+        tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
 
     Examples::
 
-        >>> # instantiate the renderer and close it after use:
-        >>> renderer = PlaywrightSyncRenderer()
-        >>> image_paths = renderer.markdown2image("# Hello World", root="./output")
+        >>> image_paths = markdown2image("# Hello World", root="./output")
     """
     html = md2html(md)
     return html2image(html, root, pdf_args=pdf_args)
@@ -146,7 +142,7 @@ def transform(
         pdf_args (PDFArgs): PDF and rendering options.
 
     Returns:
-        tuple: A dict containing the DeOCRed images, an iterable of image paths or objects.
+        tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
     """
     md = item2md(item)
 
