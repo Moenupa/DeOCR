@@ -33,7 +33,7 @@ flowchart LR
 
 </details>
 
-# Quick Start
+## Quick Start
 
 ```sh
 pip install deocr[playwright,pymupdf]
@@ -73,3 +73,16 @@ pre-commit install
 - async function timeout: increase threshold 0.05 at [datasets/utils/py_utils.py:612-626](./.venv/lib/python3.12/site-packages/datasets/utils/py_utils.py)
 
 </details>
+
+## Performance
+
+DeOCR is mainly optimized by asynchronous rendering and multiprocessing dataset mapping. The rendering speed may vary depending on the machine configuration and the complexity of the text to be rendered. On a standard machine with 32 cores, DeOCR can render more than 1k images per second.
+
+GSM8K dataset (one `512x512` image per sample) rendering speed with Intel Xeon Gold 6430:
+
+```sh
+# increase MAX_ASYNC_PAGES for more cores
+$ MAX_ASYNC_PAGES=1 python tests/dataset/manual_load.py
+Map (num_proc=1): 100%|██████████████| 7473/7473 [02:48<00:00, 44.33 examples/s]
+Map (num_proc=1): 100%|██████████████| 1319/1319 [00:27<00:00, 47.28 examples/s]
+```
