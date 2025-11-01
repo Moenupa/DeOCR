@@ -1,6 +1,6 @@
 # DeOCR
 
-DeOCR (de-cor), A reverse OCR tool that renders huggingface-compatible datasets to images of specified sizes (e.g., `512x512`). This tool can be considered as a text-to-image data pre-processing component in pipelines such as [DeepSeek-OCR](https://github.com/deepseek-ai/DeepSeek-OCR).
+DeOCR (de-cor), A reverse OCR tool that renders huggingface-compatible datasets to configurable images (e.g., custom size `512x512`, black background, paddings, margins, etc.). This tool can be considered as a text-to-image data pre-processing component in pipelines such as [DeepSeek-OCR](https://github.com/deepseek-ai/DeepSeek-OCR).
 
 ```mermaid
 ---

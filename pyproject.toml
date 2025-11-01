@@ -4,11 +4,11 @@ build-backend = "uv_build"
 
 [project]
 name = "DeOCR"
-version = "0.1.1"
+version = "0.2.0"
 authors = [
     {name = "Moenupa", email = "moenupa@gmail.com"}
 ]
-description = "A reverse OCR tool that renders huggingface-compatible datasets to images of specified sizes (e.g., `512x512`)."
+description = "A reverse OCR tool that renders huggingface-compatible datasets to configurable images (e.g., custom size `512x512`, black background, paddings, margins, etc.)."
 readme = "README.md"
 requires-python = ">=3.9,<3.15"
 classifiers = [
