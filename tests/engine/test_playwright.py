@@ -102,7 +102,14 @@ def test_md2image(
         assert osp.exists(css_path)
 
     pdf_args = PDFArgs(
-        pagesize=(width, height), css=css, css_path=css_path, dpi=96, savePDF=True
+        pagesize=(width, height),
+        css=css,
+        css_path=css_path,
+        dpi=96,
+        savePDF=True,
+        saveImage=True,
+        extension="jpg",
+        overwrite=True,
     )
 
     save_paths = markdown2image(
@@ -140,7 +147,14 @@ def test_md2image(
     ],
 )
 def test_transform(item, temp_output_dir: str, cleanup: bool):
-    pdf_args = PDFArgs(pagesize=(512, 512), dpi=72, savePDF=True)
+    pdf_args = PDFArgs(
+        pagesize=(512, 512),
+        dpi=72,
+        savePDF=True,
+        saveImage=True,
+        extension="jpg",
+        overwrite=True,
+    )
 
     img_paths = transform(
         item=item,

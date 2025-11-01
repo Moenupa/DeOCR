@@ -76,7 +76,8 @@ def generate_random_string(length: int = None) -> str:
 @pytest.mark.asyncio
 async def test_init():
     await _init()
-    assert True  # If no exceptions, the test passes
+    # If no exceptions, the test passes
+    assert True
 
 
 @pytest.mark.asyncio
@@ -108,7 +109,12 @@ async def test_md2image(
     if css_path is not None:
         assert osp.exists(css_path)
 
-    pdf_args = PDFArgs(pagesize=(width, height), css=css, css_path=css_path)
+    pdf_args = PDFArgs(
+        pagesize=(width, height),
+        saveImage=True,
+        css=css,
+        css_path=css_path,
+    )
 
     dirname = temp_output_dir
     save_paths = await markdown2image(
