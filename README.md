@@ -16,8 +16,8 @@ flowchart LR
     CSS3["cli --style default"]
     MAPPER["DeOCR Dataset Mapper"]
   end
-  TEXTDATA --> CSS1 --> IMG1[["some context in text form"]]:::redText
-  TEXTDATA --> CSS2 --> IMG2[["some context in text form"]]
+  TEXTDATA --> CSS1 --> IMG1[["some context in img form"]]:::redText
+  TEXTDATA --> CSS2 --> IMG2[["some context in img form"]]
   MMDATA --> CSS3 --> IMG3[["Does this particular car <br/> 🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>🖼️🖼️🖼️🚗🖼️🖼️🖼️<br/>🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/> present in here <br/> 🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>?"]]
   HFDATASET --> MAPPER --> DEOCRDATASET[("🖼️ imagified dataset")]
   DEOCRDATASET & IMG1 & IMG2 & IMG3 -.-> MODEL["LLMs or VLMs<br/> Evaluation"]
