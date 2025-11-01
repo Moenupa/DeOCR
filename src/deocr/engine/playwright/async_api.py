@@ -110,7 +110,7 @@ async def html2image(
     html: str,
     root: str,
     *,
-    pdf_args: PDFArgs = PDFArgs(),
+    pdf_args: PDFArgs,
 ):
     """
     Render HTML content to image(s) using Playwright.
@@ -118,7 +118,7 @@ async def html2image(
     Args:
         html (str): The HTML content to render.
         root (str): The root directory to save output images.
-        pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
+        pdf_args (PDFArgs): PDF and rendering options.
 
     Returns:
         tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
@@ -206,7 +206,7 @@ async def markdown2image(
     md: str,
     root: str,
     *,
-    pdf_args: PDFArgs = PDFArgs(),
+    pdf_args: PDFArgs,
 ):
     """
     Render markdown content to image(s) using Playwright.
@@ -214,7 +214,7 @@ async def markdown2image(
     Args:
         md (str): The markdown content to render.
         root (str): The root directory to save output images.
-        pdf_args (PDFArgs, optional): PDF and rendering options. Default: PDFArgs().
+        pdf_args (PDFArgs): PDF and rendering options.
 
     Returns:
         tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
