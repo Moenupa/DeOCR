@@ -89,7 +89,7 @@ class RenderArgs:
         metadata={"help": "If true, overwrites existing directory."},
     )
     extension: str = field(
-        default="jpg",
+        default="jpeg",
         metadata={"help": "File extension for output images."},
     )
 

@@ -22,7 +22,7 @@ def test_attrs(gsm8k_args: tuple[str, str]):
             pagesize=(512, 512),
             dpi=72,
             savePDF=False,
-            extension="jpg",
+            extension="jpeg",
             overwrite=False,
         ),
     )
@@ -70,7 +70,7 @@ def test_first_sample(gsm8k_args: tuple[str, str]):
             pagesize=(512, 512),
             dpi=72,
             savePDF=False,
-            extension="jpg",
+            extension="jpeg",
             overwrite=False,
         ),
     )

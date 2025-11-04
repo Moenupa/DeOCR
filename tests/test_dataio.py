@@ -15,9 +15,9 @@ from deocr.engine.dataio import get_identifier, get_image_path, get_n_images, te
             "Multiple images: <image> and <image>",
             [
                 {"url": "http://example.com/image2.png", "alt": "Example Image"},
-                {"image_path": "/local/path/image3.jpg"},
+                {"image_path": "/local/path/image3.jpeg"},
             ],
-            "Multiple images: ![Example Image](http://example.com/image2.png) and ![image](/local/path/image3.jpg)",
+            "Multiple images: ![Example Image](http://example.com/image2.png) and ![image](/local/path/image3.jpeg)",
         ),
         ("No images here.", [], "No images here."),
     ],
@@ -48,9 +48,9 @@ def test_get_identifier(text: str, expected: str):
 @pytest.mark.parametrize(
     "image_path,expected",
     [
-        ("/path/to/0a1addf0f4d7cd3a633241d8062df321/0000000000-0000000001.jpg", 1),
+        ("/path/to/0a1addf0f4d7cd3a633241d8062df321/0000000000-0000000001.jpeg", 1),
         (
-            ".cache/gsm8k/0a0895539aef442771b941785bcee4ee/0000008200-0000008201.jpg",
+            ".cache/gsm8k/0a0895539aef442771b941785bcee4ee/0000008200-0000008201.jpeg",
             8201,
         ),
     ],
@@ -67,8 +67,8 @@ def test_get_n_images(image_path: str, expected: int):
             "/path/to/0a1addf0f4d7cd3a633241d8062df321",
             0,
             1,
-            "jpg",
-            "/path/to/0a1addf0f4d7cd3a633241d8062df321/0000000000-0000000001.jpg",
+            "jpeg",
+            "/path/to/0a1addf0f4d7cd3a633241d8062df321/0000000000-0000000001.jpeg",
         ),
         (
             ".cache/gsm8k/0a0895539aef442771b941785bcee4ee",
