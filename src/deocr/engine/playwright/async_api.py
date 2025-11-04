@@ -236,7 +236,7 @@ async def transform(
     Transform a single data item by converting specified text columns to images.
 
     Args:
-        item (dict): Data item containing text fields.
+        item (str | dict): Data item containing text fields.
         cache_dir (str): Directory to cache generated images.
         render_args (RenderArgs): PDF and rendering options.
 
