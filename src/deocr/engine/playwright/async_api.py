@@ -19,7 +19,7 @@ try:
 except ImportError:
     pymupdf = None
 
-from ..args import PDFArgs
+from ..args import RenderArgs
 from ..dataio import get_identifier, item2md
 from ..defaults import MAX_ASYNC_PAGES
 from .md2html import md2html
@@ -110,7 +110,7 @@ async def html2image(
     html: str,
     root: str,
     *,
-    pdf_args: PDFArgs,
+    render_args: RenderArgs,
 ):
     """
     Render HTML content to image(s) using Playwright.
@@ -118,7 +118,7 @@ async def html2image(
     Args:
         html (str): The HTML content to render.
         root (str): The root directory to save output images.
-        pdf_args (PDFArgs): PDF and rendering options.
+        render_args (RenderArgs): PDF and rendering options.
 
     Returns:
         tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
@@ -140,34 +140,34 @@ async def html2image(
 
     # render & screenshot
     await page.reload(wait_until="commit")
-    width, height = pdf_args.pagesize
+    width, height = render_args.pagesize
 
     assert isinstance(width, int)
-    height = None if pdf_args.autoAdjustHeight else height
+    height = None if render_args.autoAdjustHeight else height
     await page.set_viewport_size({"width": width, "height": height or width})
     await page.set_content(html=html, wait_until="load")
 
     # inject css if any
-    if pdf_args.css is not None:
-        await page.add_style_tag(content=pdf_args.css)
-    if pdf_args.css_path is not None:
-        await page.add_style_tag(path=pdf_args.css_path)
+    if render_args.css is not None:
+        await page.add_style_tag(content=render_args.css)
+    if render_args.css_path is not None:
+        await page.add_style_tag(path=render_args.css_path)
 
     # prepare output dir
-    subfolder_name = get_identifier(html, pdf_args)
+    subfolder_name = get_identifier(html, render_args)
     subfolder = f"{root}/{subfolder_name}"
-    if osp.exists(subfolder) and not pdf_args.overwrite:
-        cached_files = glob(f"{subfolder}/*.{pdf_args.extension}")
+    if osp.exists(subfolder) and not render_args.overwrite:
+        cached_files = glob(f"{subfolder}/*.{render_args.extension}")
         if len(cached_files) > 0:
             return tuple(sorted(cached_files))
     if not osp.exists(subfolder):
         os.makedirs(subfolder)
 
     # take screenshot
-    if pymupdf is None or pdf_args.forceOnePage:
-        path = get_image_path(subfolder, 0, 1, pdf_args.extension)
+    if pymupdf is None or render_args.forceOnePage:
+        path = get_image_path(subfolder, 0, 1, render_args.extension)
         await page.screenshot(
-            path=path, full_page=pdf_args.autoAdjustHeight or height is None
+            path=path, full_page=render_args.autoAdjustHeight or height is None
         )
         # release page to idle pages
         _manager.set_page_status(status_page["id"], False)
@@ -175,7 +175,7 @@ async def html2image(
 
     # export as pdf and then convert to images
     pdf_bytes = await page.pdf(
-        path=f"{subfolder}/.pdf" if pdf_args.savePDF else None,
+        path=f"{subfolder}/.pdf" if render_args.savePDF else None,
         scale=1,
         header_template=None,
         footer_template=None,
@@ -184,18 +184,18 @@ async def html2image(
         width=f"{width}px",
         height=f"{height}px" if height is not None else None,
         margin=PdfMargins(
-            top=f"{pdf_args.marginTop}px",
-            bottom=f"{pdf_args.marginBottom}px",
-            left=f"{pdf_args.marginLeft}px",
-            right=f"{pdf_args.marginRight}px",
+            top=f"{render_args.marginTop}px",
+            bottom=f"{render_args.marginBottom}px",
+            left=f"{render_args.marginLeft}px",
+            right=f"{render_args.marginRight}px",
         ),
     )
     image_paths = pdf2image(
         pdf_bytes=pdf_bytes,
         subfolder=subfolder,
-        dpi=pdf_args.dpi,
-        extension=pdf_args.extension,
-        save_images=pdf_args.saveImage,
+        dpi=render_args.dpi,
+        extension=render_args.extension,
+        save_images=render_args.saveImage,
     )
     # release page to idle pages
     _manager.set_page_status(status_page["id"], False)
@@ -206,7 +206,7 @@ async def markdown2image(
     md: str,
     root: str,
     *,
-    pdf_args: PDFArgs,
+    render_args: RenderArgs,
 ):
     """
     Render markdown content to image(s) using Playwright.
@@ -214,7 +214,7 @@ async def markdown2image(
     Args:
         md (str): The markdown content to render.
         root (str): The root directory to save output images.
-        pdf_args (PDFArgs): PDF and rendering options.
+        render_args (RenderArgs): PDF and rendering options.
 
     Returns:
         tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
@@ -224,13 +224,13 @@ async def markdown2image(
         >>> image_paths = await markdown2image("# Hello World", root="./output")
     """
     html = md2html(md)
-    return await html2image(html, root, pdf_args=pdf_args)
+    return await html2image(html, root, render_args=render_args)
 
 
 async def transform(
     item: str | dict,
     cache_dir: str,
-    pdf_args: PDFArgs,
+    render_args: RenderArgs,
 ):
     """
     Transform a single data item by converting specified text columns to images.
@@ -238,7 +238,7 @@ async def transform(
     Args:
         item (dict): Data item containing text fields.
         cache_dir (str): Directory to cache generated images.
-        pdf_args (PDFArgs): PDF and rendering options.
+        render_args (RenderArgs): PDF and rendering options.
 
     Returns:
         tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
@@ -246,7 +246,7 @@ async def transform(
     md = item2md(item)
 
     # convert md to image via async markdown2image function
-    deocr_ed = await markdown2image(md, root=cache_dir, pdf_args=pdf_args)
+    deocr_ed = await markdown2image(md, root=cache_dir, render_args=render_args)
 
     return deocr_ed
 

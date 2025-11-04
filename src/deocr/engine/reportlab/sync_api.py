@@ -11,7 +11,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import Paragraph, SimpleDocTemplate
 
-from ..args import PDFArgs
+from ..args import RenderArgs
 from ..dataio import get_identifier
 
 PRESETS = getSampleStyleSheet()
@@ -24,7 +24,7 @@ def text_to_images(
     font_path: str = None,
     newline_markup: str = "<br/>",
     background_color: colors.Color = colors.white,
-    layout_kwargs: PDFArgs = PDFArgs(),
+    layout_kwargs: RenderArgs = RenderArgs(),
     p_style_kwargs: dict = None,
 ):
     """

@@ -3,28 +3,28 @@ from typing import Optional
 
 
 @dataclass
-class PDFArgs:
+class RenderArgs:
     # page geometry
     pagesize: tuple[float, Optional[float]] = field(
-        default=(512, 512),
+        default=(896, 896),
         metadata={
             "help": "(width, height) of each page, expressed in points (pt). Changing this changes the physical size of the PDF pages."
         },
     )
     marginLeft: float = field(
-        default=0,
+        default=20,
         metadata={"help": "Left margin in points."},
     )
     marginRight: float = field(
-        default=0,
+        default=20,
         metadata={"help": "Right margin in points."},
     )
     marginTop: float = field(
-        default=0,
+        default=20,
         metadata={"help": "Top margin in points."},
     )
     marginBottom: float = field(
-        default=0,
+        default=20,
         metadata={"help": "Bottom margin in points."},
     )
 
@@ -73,7 +73,7 @@ class PDFArgs:
         },
     )
     saveImage: bool = field(
-        default=True,
+        default=False,
         metadata={
             "help": "If true, saves the generated Image to disk. If false, returns PIL Image objects in memory."
         },

@@ -6,7 +6,7 @@ import string
 import pytest
 from PIL import Image
 
-from deocr.engine.args import PDFArgs
+from deocr.engine.args import RenderArgs
 from deocr.engine.playwright.sync_api import markdown2image, transform
 
 
@@ -101,7 +101,7 @@ def test_md2image(
     if css_path is not None:
         assert osp.exists(css_path)
 
-    pdf_args = PDFArgs(
+    render_args = RenderArgs(
         pagesize=(width, height),
         css=css,
         css_path=css_path,
@@ -115,7 +115,7 @@ def test_md2image(
     save_paths = markdown2image(
         text,
         temp_output_dir,
-        pdf_args=pdf_args,
+        render_args=render_args,
     )
     for each_image in save_paths:
         assert osp.exists(each_image)
@@ -147,7 +147,7 @@ def test_md2image(
     ],
 )
 def test_transform(item, temp_output_dir: str, cleanup: bool):
-    pdf_args = PDFArgs(
+    render_args = RenderArgs(
         pagesize=(512, 512),
         dpi=72,
         savePDF=True,
@@ -159,7 +159,7 @@ def test_transform(item, temp_output_dir: str, cleanup: bool):
     img_paths = transform(
         item=item,
         cache_dir=temp_output_dir,
-        pdf_args=pdf_args,
+        render_args=render_args,
     )
 
     # check output keys

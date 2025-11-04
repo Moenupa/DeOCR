@@ -8,7 +8,7 @@ import pytest
 import pytest_asyncio
 from PIL import Image
 
-from deocr.engine.args import PDFArgs
+from deocr.engine.args import RenderArgs
 from deocr.engine.playwright.async_api import _init, markdown2image
 
 
@@ -109,7 +109,7 @@ async def test_md2image(
     if css_path is not None:
         assert osp.exists(css_path)
 
-    pdf_args = PDFArgs(
+    render_args = RenderArgs(
         pagesize=(width, height),
         saveImage=True,
         css=css,
@@ -120,7 +120,7 @@ async def test_md2image(
     save_paths = await markdown2image(
         text,
         dirname,
-        pdf_args=pdf_args,
+        render_args=render_args,
     )
     for each_image in save_paths:
         assert osp.exists(each_image)

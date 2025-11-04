@@ -1,7 +1,7 @@
 import pytest
 from datasets import DatasetDict, load_dataset
 
-from deocr.engine.args import PDFArgs
+from deocr.engine.args import RenderArgs
 from deocr.load import load_deocr_dataset
 
 
@@ -18,7 +18,7 @@ def test_attrs(gsm8k_args: tuple[str, str]):
         feed_columns=("question",),
         deocr_column="question_processed",
         deocr_cache_dir=".cache/gsm8k",
-        pdf_args=PDFArgs(
+        render_args=RenderArgs(
             pagesize=(512, 512),
             dpi=72,
             savePDF=False,
@@ -66,7 +66,7 @@ def test_first_sample(gsm8k_args: tuple[str, str]):
         feed_columns=("question",),
         deocr_column="question_processed",
         deocr_cache_dir=".cache/gsm8k",
-        pdf_args=PDFArgs(
+        render_args=RenderArgs(
             pagesize=(512, 512),
             dpi=72,
             savePDF=False,

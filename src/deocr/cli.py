@@ -16,7 +16,7 @@ if TYPE_CHECKING:
         Version,
     )
 
-    from deocr.engine.args import PDFArgs
+    from deocr.engine.args import RenderArgs
 
 
 # this is a cli convertion tool
@@ -46,7 +46,7 @@ def convert(
     feed_columns: tuple[str] = ("text",),
     deocr_column: str = "deocr_processed",
     deocr_cache_dir: Optional[str] = None,
-    pdf_args: Optional[PDFArgs] = None,
+    render_args: Optional[RenderArgs] = None,
     output_dir: str = "./deocr_datasets",
     # other kwargs from load_dataset
     **config_kwargs,
@@ -74,7 +74,7 @@ def convert(
         feed_columns=feed_columns,
         deocr_column=deocr_column,
         deocr_cache_dir=deocr_cache_dir,
-        pdf_args=pdf_args,
+        render_args=render_args,
         # other kwargs from load_dataset
         **config_kwargs,
     )

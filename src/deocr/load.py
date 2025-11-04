@@ -3,7 +3,7 @@ from typing import Optional
 
 from datasets import load_dataset
 
-from .engine.args import PDFArgs
+from .engine.args import RenderArgs
 from .engine.defaults import MAX_ASYNC_PAGES
 from .engine.playwright.async_api import transform
 
@@ -15,7 +15,7 @@ def load_deocr_dataset(
     feed_columns: Optional[tuple[str]] = None,
     deocr_column: Optional[str] = None,
     deocr_cache_dir: str = None,
-    pdf_args: PDFArgs = None,
+    render_args: RenderArgs = None,
     **kwargs,
 ):
     r"""
@@ -27,7 +27,7 @@ def load_deocr_dataset(
         feed_columns (tuple[str], optional): Column IDs for DeOCR. Default: ``_DEFAULT_FEEDS_COLUMNS``.
         deocr_column (str, optional): Column ID for DeOCRed output. Default: ``_DEFAULT_DEOCRED_COLUMN_NAME``.
         cache_dir (str, optional): Root dir for caching. Default: None.
-        pdf_args (PDFArgs, optional): PDF arguments for styling. Default: None.
+        render_args (RenderArgs, optional): PDF arguments for styling. Default: None.
 
     Raises:
         NotImplementedError: If the dataset type is not supported.
@@ -46,14 +46,14 @@ def load_deocr_dataset(
         deocr_column = _DEFAULT_DEOCRED_COLUMN_NAME
     if deocr_cache_dir is None:
         deocr_cache_dir = tempfile.mkdtemp()
-    if pdf_args is None:
-        pdf_args = PDFArgs()
+    if render_args is None:
+        render_args = RenderArgs()
 
     async def transform_wrapper(item):
         images = await transform(
             item=item,
             cache_dir=deocr_cache_dir,
-            pdf_args=pdf_args,
+            render_args=render_args,
         )
         return {deocr_column: images}
 
