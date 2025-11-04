@@ -23,7 +23,7 @@ from ..args import RenderArgs
 from ..dataio import get_identifier, item2md
 from ..defaults import MAX_ASYNC_PAGES
 from .md2html import md2html
-from .pdf2image import get_image_path, pdf2image
+from .pdf2image import get_image_path, pdf2image_async
 
 
 # Init browser and context
@@ -190,7 +190,7 @@ async def html2image(
             right=f"{render_args.marginRight}px",
         ),
     )
-    image_paths = pdf2image(
+    image_paths = await pdf2image_async(
         pdf_bytes=pdf_bytes,
         subfolder=subfolder,
         dpi=render_args.dpi,

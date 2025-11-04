@@ -1,3 +1,4 @@
+import asyncio
 from typing import TYPE_CHECKING
 
 try:
@@ -12,17 +13,26 @@ if TYPE_CHECKING:
     from PIL.Image import Image
 
 
-def _worker(args):
-    pdf_bytes, subfolder, dpi, extension, save_images, i, n_pages = args
+async def pdf2image_async(
+    pdf_bytes: bytes, subfolder: str, dpi: int, extension: str, save_images: bool = True
+) -> tuple[str] | tuple["Image"]:
+    out = []
+    loop = asyncio.get_event_loop()
     with pymupdf.Document(stream=pdf_bytes, filetype="pdf") as pdf_doc:
-        page_pdf = pdf_doc.load_page(i)
-        pix = page_pdf.get_pixmap(dpi=dpi)
-        if save_images:
-            save_to = get_image_path(subfolder, i, n_pages, extension)
-            pix.save(save_to)
-            return save_to
-        else:
-            return pix.pil_image()
+        n_pages = len(pdf_doc)
+
+        for i in range(n_pages):
+            page = pdf_doc.load_page(i)
+            pix = page.get_pixmap(dpi=dpi)
+            if save_images:
+                save_to = get_image_path(subfolder, i, n_pages, extension)
+                await loop.run_in_executor(None, pix.save, save_to)
+                out.append(save_to)
+            else:
+                pil_image = await loop.run_in_executor(None, pix.pil_image)
+                out.append(pil_image)
+
+    return tuple(out)
 
 
 def pdf2image(
