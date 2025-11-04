@@ -5,7 +5,7 @@ from typing import Optional
 @dataclass
 class RenderArgs:
     # page geometry
-    pagesize: tuple[float, Optional[float]] = field(
+    pagesize: tuple[int, Optional[int]] = field(
         default=(896, 896),
         metadata={
             "help": "(width, height) of each page, expressed in points (pt). Changing this changes the physical size of the PDF pages."
