@@ -175,7 +175,7 @@ async def html2image(
 
     # export as pdf and then convert to images
     pdf_bytes = await page.pdf(
-        path=f"{subfolder}/.pdf" if render_args.savePDF else None,
+        path=f"{subfolder}/sample.pdf" if render_args.savePDF else None,
         scale=1,
         header_template=None,
         footer_template=None,
