@@ -153,18 +153,27 @@ async def html2image(
     if render_args.css_path is not None:
         await page.add_style_tag(path=render_args.css_path)
 
-    # prepare output dir
-    subfolder_name = get_identifier(html, render_args)
-    subfolder = f"{root}/{subfolder_name}"
+    # fallback to screenshot if
+    # 1. pdf2image is not available
+    # 2. forceOnePage turned on
+    _do_screenshot = pymupdf is None or render_args.forceOnePage
+
+    # predict if any disk io is needed
+    _do_save_artifact = render_args.saveImage or render_args.savePDF or _do_screenshot
+
+    # use cache
+    subfolder = f"{root}/{get_identifier(html, render_args)}"
     if osp.exists(subfolder) and not render_args.overwrite:
         cached_files = glob(f"{subfolder}/*.{render_args.extension}")
         if len(cached_files) > 0:
             return tuple(sorted(cached_files))
-    if not osp.exists(subfolder):
-        os.makedirs(subfolder)
+
+    # if any disk io is needed, prepare output dir
+    if not osp.exists(subfolder) and _do_save_artifact:
+        os.makedirs(subfolder, exist_ok=True)
 
     # take screenshot
-    if pymupdf is None or render_args.forceOnePage:
+    if _do_screenshot:
         path = get_image_path(subfolder, 0, 1, render_args.extension)
         await page.screenshot(
             path=path, full_page=render_args.autoAdjustHeight or height is None
@@ -175,11 +184,8 @@ async def html2image(
 
     # export as pdf and then convert to images
     pdf_bytes = await page.pdf(
-        path=f"{subfolder}/sample.pdf" if render_args.savePDF else None,
         scale=1,
-        header_template=None,
-        footer_template=None,
-        format=None,
+        display_header_footer=False,
         print_background=True,
         width=f"{width}px",
         height=f"{height}px" if height is not None else None,
@@ -189,6 +195,8 @@ async def html2image(
             left=f"{render_args.marginLeft}px",
             right=f"{render_args.marginRight}px",
         ),
+        # save pdf if specified
+        path=f"{subfolder}/sample.pdf" if render_args.savePDF else None,
     )
     image_paths = await pdf2image_async(
         pdf_bytes=pdf_bytes,
