@@ -108,7 +108,7 @@ def test_md2image(
         dpi=96,
         savePDF=True,
         saveImage=True,
-        extension="jpeg",
+        save_format="jpeg",
         overwrite=True,
     )
 
@@ -152,7 +152,7 @@ def test_transform(item, temp_output_dir: str, cleanup: bool):
         dpi=72,
         savePDF=True,
         saveImage=True,
-        extension="jpeg",
+        save_format="jpeg",
         overwrite=True,
     )
 

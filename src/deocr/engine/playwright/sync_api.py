@@ -69,7 +69,7 @@ def html2image(
     # use cache
     subfolder = f"{root}/{get_identifier(html, render_args)}"
     if osp.exists(subfolder) and not render_args.overwrite:
-        cached_files = glob(f"{subfolder}/*.{render_args.extension}")
+        cached_files = glob(f"{subfolder}/*.{render_args.save_format}")
         if len(cached_files) > 0:
             return tuple(sorted(cached_files))
 
@@ -79,7 +79,7 @@ def html2image(
 
     # take screenshot
     if _do_screenshot:
-        path = get_image_path(subfolder, 0, 1, render_args.extension)
+        path = get_image_path(subfolder, 0, 1, render_args.save_format)
         _page.screenshot(
             path=path, full_page=render_args.autoAdjustHeight or height is None
         )
@@ -105,8 +105,9 @@ def html2image(
         pdf_bytes=pdf_bytes,
         subfolder=subfolder,
         dpi=render_args.dpi,
-        extension=render_args.extension,
-        save_images=render_args.saveImage,
+        enable_saving=render_args.saveImage,
+        save_format=render_args.save_format,
+        save_kwargs=render_args.save_kwargs,
     )
 
 

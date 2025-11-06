@@ -88,9 +88,13 @@ class RenderArgs:
         default=False,
         metadata={"help": "If true, overwrites existing directory."},
     )
-    extension: str = field(
+    save_format: str = field(
         default="jpeg",
         metadata={"help": "File extension for output images."},
+    )
+    save_kwargs: dict = field(
+        default_factory=lambda: {"quality": 85},
+        metadata={"help": "Additional keyword arguments for saving images."},
     )
 
     css: Optional[str] = field(
