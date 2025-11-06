@@ -94,7 +94,9 @@ class RenderArgs:
     )
     save_kwargs: dict = field(
         default_factory=lambda: {"quality": 85},
-        metadata={"help": "Additional keyword arguments for saving images."},
+        metadata={
+            "help": "Additional keyword arguments for pillow image saving. https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#fully-supported-formats"
+        },
     )
 
     css: Optional[str] = field(
