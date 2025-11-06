@@ -21,9 +21,9 @@ def cleanup_subfolder(subfolder: str, cleanup: bool):
         shutil.rmtree(subfolder)
 
 
-SAMPLE_TEXT = r"""# Heading H1
-## H2
-### H3
+SAMPLE_TEXT = r"""# The quick brown fox jumps over the lazy
+## The quick brown fox jumps over the lazy
+### The quick brown fox jumps over the lazy
 
 ---
 
@@ -34,7 +34,7 @@ SAMPLE_TEXT = r"""# Heading H1
 
 ---
 
-1. First
+1. The quick brown fox jumps over the lazy dog.
 2. Second
    1. Sub‑first
    2. Sub‑second
