@@ -7,21 +7,21 @@ DeOCR (de-cor), A reverse OCR tool that renders huggingface-compatible datasets 
 title: DeOCR Usage in LLM Pipeline
 ---
 flowchart LR
-  TEXTDATA[/"some context in text form"/]
+  TEXTDATA[/"context as pure text"/]
   MMDATA[/"Does this particular car <br/> &lt;image&gt; present in here &lt;image&gt; ?"/]
   HFDATASET[("huggingface dataset")] 
   subgraph DeOCR
-    CSS1["cli --style red-text textit"]
+    CSS1["cli --style red-text,bold"]
     CSS2["cli --style default"]
     CSS3["cli --style default"]
     MAPPER["DeOCR Dataset Mapper"]
   end
-  TEXTDATA --> CSS1 --> IMG1[["some context in img form"]]:::redText
-  TEXTDATA --> CSS2 --> IMG2[["some context in img form"]]
+  TEXTDATA --> CSS1 --> IMG1[["🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>🖼️ context as img 🖼️<br/>🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>"]]:::redText
+  TEXTDATA --> CSS2 --> IMG2[["🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>🖼️ context as img 🖼️<br/>🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>"]]
   MMDATA --> CSS3 --> IMG3[["Does this particular car <br/> 🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>🖼️🖼️🖼️🚗🖼️🖼️🖼️<br/>🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/> present in here <br/> 🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>🖼️🖼️🖼️🖼️🖼️🖼️🖼️<br/>?"]]
   HFDATASET --> MAPPER --> DEOCRDATASET[("🖼️ imagified dataset")]
   DEOCRDATASET & IMG1 & IMG2 & IMG3 -.-> MODEL["LLMs or VLMs<br/> Evaluation"]
-  classDef redText color:#ff0000,font-style:italic;
+  classDef redText color:#ff0000,font-weight:bold;
   IMG1 ~~~|"fa:fa-mobile-screen A screenshot of text <br/>w. special formatting"| IMG1
   IMG2 ~~~|"fa:fa-mobile-screen A plain screenshot of text"| IMG2
   IMG3 ~~~|"fa:fa-mobile-screen A screenshot of both text and images"| IMG3
