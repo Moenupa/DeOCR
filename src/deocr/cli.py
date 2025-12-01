@@ -43,9 +43,9 @@ def convert(
     num_proc: Optional[int] = None,
     storage_options: Optional[dict] = None,
     # deocr args
-    feed_columns: tuple[str] = ("text",),
+    feed_columns: list[str] = ["text"],
     deocr_column: str = "deocr_processed",
-    deocr_cache_dir: Optional[str] = None,
+    deocr_cache_dir: str | None = None,
     render_args: Optional[RenderArgs] = None,
     output_dir: str = "./deocr_datasets",
     # other kwargs from load_dataset

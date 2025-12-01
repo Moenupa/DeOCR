@@ -4,7 +4,7 @@ import importlib.util
 try:
     import pytest
 except ImportError:
-    pytest = None
+    pytest: None = None
 
 """
 src

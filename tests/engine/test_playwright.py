@@ -66,7 +66,7 @@ $$
 """
 
 
-def generate_random_string(length: int = None) -> str:
+def generate_random_string(length: int | None = None) -> str:
     """Generates a random string of specified length using letters and digits."""
     if length is None:
         return SAMPLE_TEXT
@@ -163,7 +163,7 @@ def test_transform(item, temp_output_dir: str, cleanup: bool):
     )
 
     # check output keys
-    assert isinstance(img_paths, tuple)
+    assert isinstance(img_paths, list)
 
     # check image paths
     assert len(img_paths) > 0

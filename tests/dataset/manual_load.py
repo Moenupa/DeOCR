@@ -15,7 +15,7 @@ def test_attrs(gsm8k_args: tuple[str, str]):
     ds_ref = load_dataset(*gsm8k_args)
     ds = load_deocr_dataset(
         *gsm8k_args,
-        feed_columns=("question",),
+        feed_columns=["question"],
         deocr_column="question_processed",
         deocr_cache_dir=".cache/gsm8k",
         render_args=RenderArgs(
@@ -63,7 +63,7 @@ def test_first_sample(gsm8k_args: tuple[str, str]):
 
     ds = load_deocr_dataset(
         *gsm8k_args,
-        feed_columns=("question",),
+        feed_columns=["question"],
         deocr_column="question_processed",
         deocr_cache_dir=".cache/gsm8k",
         render_args=RenderArgs(

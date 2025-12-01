@@ -12,10 +12,10 @@ _DEFAULT_DEOCRED_COLUMN_NAME = "deocr"
 
 def load_deocr_dataset(
     *args,
-    feed_columns: Optional[tuple[str]] = None,
-    deocr_column: Optional[str] = None,
-    deocr_cache_dir: str = None,
-    render_args: RenderArgs = None,
+    feed_columns: list[str] | None = None,
+    deocr_column: str | None = None,
+    deocr_cache_dir: str | None = None,
+    render_args: Optional[RenderArgs] = None,
     **kwargs,
 ):
     r"""
@@ -24,7 +24,7 @@ def load_deocr_dataset(
     - Returns a wrapper with same API as ``datasets.Dataset | datasets.DatasetDict`` depending on input args.
 
     Args:
-        feed_columns (tuple[str], optional): Column IDs for DeOCR. Default: ``_DEFAULT_FEEDS_COLUMNS``.
+        feed_columns (list[str], optional): Column IDs for DeOCR. Default: ``_DEFAULT_FEEDS_COLUMNS``.
         deocr_column (str, optional): Column ID for DeOCRed output. Default: ``_DEFAULT_DEOCRED_COLUMN_NAME``.
         cache_dir (str, optional): Root dir for caching. Default: None.
         render_args (RenderArgs, optional): PDF arguments for styling. Default: None.
