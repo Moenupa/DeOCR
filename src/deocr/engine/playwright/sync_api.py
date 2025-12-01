@@ -9,7 +9,7 @@ from playwright.sync_api import Playwright, sync_playwright
 try:
     import pymupdf
 except ImportError:
-    pymupdf = None
+    pymupdf: None = None
 from ..args import RenderArgs
 from ..dataio import get_identifier, item2md
 from .md2html import md2html
@@ -24,7 +24,7 @@ _page = _context.new_page()
 
 def html2image(
     html: str,
-    root: str,
+    root: str | None,
     *,
     render_args: RenderArgs,
 ):
@@ -33,16 +33,27 @@ def html2image(
 
     Args:
         html (str): The HTML content to render.
-        root (str): The root directory to save output images.
+        root (str | None): The root directory to save output images.
         render_args (RenderArgs): PDF and rendering options.
 
     Returns:
-        tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
+        list: DeOCR-ed images, an iterable of image paths or objects.
 
     Examples::
 
         >>> image_paths = html2image("<h1>Hello World</h1>", root="./output")
     """
+    # fallback to screenshot if
+    # 1. pdf2image is not available
+    # 2. forceOnePage turned on
+    _do_screenshot = pymupdf is None or render_args.forceOnePage
+
+    # predict if any disk io is needed
+    _do_save_artifact = render_args.saveImage or render_args.savePDF or _do_screenshot
+    if _do_save_artifact:
+        assert root is not None, (
+            "root directory must be specified when saving artifacts."
+        )
 
     _page.reload(wait_until="commit")
     width, height = render_args.pagesize
@@ -53,37 +64,34 @@ def html2image(
     _page.set_content(html=html, wait_until="load")
 
     # inject css if any
-    if render_args.css is not None:
-        _page.add_style_tag(content=render_args.css)
     if render_args.css_path is not None:
         _page.add_style_tag(path=render_args.css_path)
-
-    # fallback to screenshot if
-    # 1. pdf2image is not available
-    # 2. forceOnePage turned on
-    _do_screenshot = pymupdf is None or render_args.forceOnePage
-
-    # predict if any disk io is needed
-    _do_save_artifact = render_args.saveImage or render_args.savePDF or _do_screenshot
+    if render_args.css is not None:
+        _page.add_style_tag(content=render_args.css)
 
     # use cache
-    subfolder = f"{root}/{get_identifier(html, render_args)}"
-    if osp.exists(subfolder) and not render_args.overwrite:
-        cached_files = glob(f"{subfolder}/*.{render_args.save_format}")
-        if len(cached_files) > 0:
-            return tuple(sorted(cached_files))
+    if root is None:
+        subfolder = None
+    else:
+        # use cache
+        subfolder = f"{root}/{get_identifier(html, render_args)}"
+        if osp.exists(subfolder) and not render_args.overwrite:
+            cached_files = glob(f"{subfolder}/*.{render_args.save_format}")
+            if len(cached_files) > 0:
+                cached_files.sort()
+                return cached_files
 
-    # if any disk io is needed, prepare output dir
-    if not osp.exists(subfolder) and _do_save_artifact:
-        os.makedirs(subfolder)
+        # if any disk io is needed, prepare output dir
+        if _do_save_artifact and not osp.exists(subfolder):
+            os.makedirs(subfolder, exist_ok=True)
 
-    # take screenshot
-    if _do_screenshot:
-        path = get_image_path(subfolder, 0, 1, render_args.save_format)
-        _page.screenshot(
-            path=path, full_page=render_args.autoAdjustHeight or height is None
-        )
-        return (path,)
+        # take screenshot
+        if _do_screenshot:
+            path = get_image_path(subfolder, 0, 1, render_args.save_format)
+            _page.screenshot(
+                path=path, full_page=render_args.autoAdjustHeight or height is None
+            )
+            return [path]
 
     # export as pdf and then convert to images
     pdf_bytes = _page.pdf(
@@ -98,7 +106,8 @@ def html2image(
             left=f"{render_args.marginLeft}px",
             right=f"{render_args.marginRight}px",
         ),
-        # save pdf if specified
+        # save pdf if specified, root can not be None
+        # since _do_save_artifact is True and asserted above
         path=f"{subfolder}/sample.pdf" if render_args.savePDF else None,
     )
     return pdf2image(
@@ -113,7 +122,7 @@ def html2image(
 
 def markdown2image(
     md: str,
-    root: str,
+    root: str | None,
     *,
     render_args: RenderArgs,
 ):
@@ -122,11 +131,11 @@ def markdown2image(
 
     Args:
         md (str): The markdown content to render.
-        root (str): The root directory to save output images.
+        root (str | None): The root directory to save output images.
         render_args (RenderArgs): PDF and rendering options.
 
     Returns:
-        tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
+        list: DeOCR-ed images, an iterable of image paths or objects.
 
     Examples::
 
@@ -138,7 +147,7 @@ def markdown2image(
 
 def transform(
     item: str | dict,
-    cache_dir: str,
+    cache_dir: str | None,
     render_args: RenderArgs,
 ):
     """
@@ -146,11 +155,11 @@ def transform(
 
     Args:
         item (str | dict): Data item containing text fields.
-        cache_dir (str): Directory to cache generated images.
+        cache_dir (str | None): Directory to cache generated images.
         render_args (RenderArgs): PDF and rendering options.
 
     Returns:
-        tuple: Tuple of DeOCR-ed images, an iterable of image paths or objects.
+        list: DeOCR-ed images, an iterable of image paths or objects.
     """
     md = item2md(item)
 

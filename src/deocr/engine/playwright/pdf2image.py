@@ -21,7 +21,7 @@ async def fn_save_img_async(
 
 async def pdf2image_async(
     pdf_bytes: bytes,
-    subfolder: str,
+    subfolder: str | None,
     dpi: int,
     save_format: str,
     enable_saving: bool = True,
@@ -41,6 +41,7 @@ async def pdf2image_async(
                 out.append(pil_image)
                 continue
 
+            assert subfolder is not None
             save_to = get_image_path(subfolder, i, n_pages, save_format)
             out.append(save_to)
             await fn_save_img_async(pil_image, save_to, save_kwargs or {})
@@ -50,7 +51,7 @@ async def pdf2image_async(
 
 def pdf2image(
     pdf_bytes: bytes,
-    subfolder: str,
+    subfolder: str | None,
     dpi: int,
     save_format: str,
     enable_saving: bool = True,
@@ -67,6 +68,7 @@ def pdf2image(
                 out.append(pil_image)
                 continue
 
+            assert subfolder is not None
             save_to = get_image_path(subfolder, i, n_pages, save_format)
             pil_image.save(save_to, **(save_kwargs or {}))
             out.append(save_to)
