@@ -39,7 +39,7 @@ def get_identifier(msg: str, *configs) -> str:
 
 def text2md(
     context: str,
-    images: list[str | dict] = None,
+    images: list[str | dict] | None = None,
 ) -> str:
     # convert context to markdown format, embed images if any
     # use 1 to 1 substitution for <image>

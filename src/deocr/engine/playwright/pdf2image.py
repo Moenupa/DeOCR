@@ -4,17 +4,17 @@ from typing import TYPE_CHECKING
 try:
     import pymupdf
 except ImportError:
-    pymupdf = None
+    pymupdf: None = None
 
 
 from ..dataio import get_image_path
 
 if TYPE_CHECKING:
-    from PIL.Image import Image
+    from PIL.Image import Image as PILImage
 
 
 async def fn_save_img_async(
-    pil_image: "Image", save_to: str, save_kwargs: dict
+    pil_image: "PILImage", save_to: str, save_kwargs: dict
 ) -> None:
     pil_image.save(save_to, **save_kwargs)
 
@@ -25,8 +25,8 @@ async def pdf2image_async(
     dpi: int,
     save_format: str,
     enable_saving: bool = True,
-    save_kwargs: dict = None,
-) -> tuple[str] | tuple["Image"]:
+    save_kwargs: dict | None = None,
+) -> list[str] | list["PILImage"]:
     out = []
     loop = asyncio.get_event_loop()
     with pymupdf.Document(stream=pdf_bytes, filetype="pdf") as pdf_doc:
@@ -45,7 +45,7 @@ async def pdf2image_async(
             out.append(save_to)
             await fn_save_img_async(pil_image, save_to, save_kwargs or {})
 
-    return tuple(out)
+    return out
 
 
 def pdf2image(
@@ -54,8 +54,8 @@ def pdf2image(
     dpi: int,
     save_format: str,
     enable_saving: bool = True,
-    save_kwargs: dict = None,
-) -> tuple[str] | tuple["Image"]:
+    save_kwargs: dict | None = None,
+) -> list[str] | list["PILImage"]:
     out = []
     with pymupdf.Document(stream=pdf_bytes, filetype="pdf") as pdf_doc:
         n_pages = len(pdf_doc)
@@ -71,4 +71,4 @@ def pdf2image(
             pil_image.save(save_to, **(save_kwargs or {}))
             out.append(save_to)
 
-    return tuple(out)
+    return out
