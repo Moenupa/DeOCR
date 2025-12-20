@@ -4,11 +4,11 @@ build-backend = "uv_build"
 
 [project]
 name = "DeOCR"
-version = "0.3.0"
+version = "0.3.1"
 authors = [
     {name = "Moenupa", email = "moenupa@gmail.com"}
 ]
-description = "A reverse OCR tool that renders text to images with various configuration options. Supports huggingface datasets."
+description = "A high-performance highly-customizable reverse OCR tool that renders text or huggingface-compatible datasets to images. Dimension, DPI, CSS configurable!"
 readme = "README.md"
 requires-python = ">=3.9,<3.15"
 classifiers = [
@@ -21,7 +21,6 @@ dependencies = [
     "jsonargparse[signatures]>=4.26.1",
     "datasets",
     "markdown-it-py>=3.0.0",
-    "linkify-it-py",
 ]
 
 [project.optional-dependencies]

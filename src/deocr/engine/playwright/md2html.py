@@ -34,5 +34,5 @@ def md2html(md: str) -> str:
 
         >>> html_content = md2html("# Hello World")
     """
-    _renderer = MarkdownIt("gfm-like", {"linkify": True})
+    _renderer = MarkdownIt("gfm-like")
     return _renderer.render(md)
