@@ -64,7 +64,7 @@ def hello(name: str) -> None:
 """
 
 
-def generate_random_string(length: int = None) -> str:
+def generate_random_string(length: int | None = None) -> str:
     """Generates a random string of specified length using letters and digits."""
     if length is None:
         return SAMPLE_TEXT

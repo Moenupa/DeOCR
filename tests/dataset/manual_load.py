@@ -50,8 +50,8 @@ def test_attrs(gsm8k_args: tuple[str, str]):
 
 
 def test_first_sample(gsm8k_args: tuple[str, str]):
-    ds_ref = load_dataset(*gsm8k_args)
-    first_sample_ref = ds_ref["test"][0]
+    ds_ref = load_dataset(*gsm8k_args, split="test")
+    first_sample_ref = ds_ref[0]  # ty: ignore
     assert isinstance(first_sample_ref, dict)
     expected = {
         "question": "Janet’s ducks lay 16 eggs per day. She eats three for breakfast every morning and bakes muffins for her friends every day with four. She sells the remainder at the farmers' market daily for $2 per fresh duck egg. How much in dollars does she make every day at the farmers' market?",

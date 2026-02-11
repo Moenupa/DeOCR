@@ -1,5 +1,5 @@
 [build-system]
-requires = ["uv_build>=0.9.5,<0.10.0"]
+requires = ["uv_build>=0.10.0,<0.11.0"]
 build-backend = "uv_build"
 
 [project]
@@ -21,12 +21,12 @@ dependencies = [
     "jsonargparse[signatures]>=4.26.1",
     "datasets[vision]",
     "markdown-it-py>=3.0.0",
-    "linkify-it-py"
+    "linkify-it-py",
 ]
 
 [project.optional-dependencies]
 playwright = [
-    "playwright>=1.49.1,<1.56.0"
+    "playwright>=1.49.1,<1.59.0"
 ]
 reportlab = [
     "reportlab>=4.4.4"
@@ -34,23 +34,28 @@ reportlab = [
 pymupdf = [
     "pymupdf",
 ]
+ghactions = [
+    "deocr[playwright,pymupdf]",
+]
 
 [dependency-groups]
 dev = [
-    "pre-commit>=4.3.0",
+    "pre-commit",
     "pytest>=8.4.2",
     "pytest-asyncio",
     "pytest-xdist",
-    "ruff>=0.14.2",
+    "ruff",
     "build",
 ]
 
 [project.urls]
-Homepage = "https://github.com/Moenupa/DeOCR"
-Issues = "https://github.com/Moenupa/DeOCR/issues"
+homepage = "https://github.com/Moenupa/DeOCR"
+source = "https://github.com/Moenupa/DeOCR"
+issues = "https://github.com/Moenupa/DeOCR/issues"
 
 [tool.pytest.ini_options]
 addopts = "--ignore=tests/async/ -n 16"
 markers = [
-    "nocleanup: mark test to skip cleanup fixture",
+    "slow: mark tests as slow (pytest -m 'not slow' or set RUN_SLOW=1 to run)",
+    "nocleanup: mark tests to skip cleanup fixture",
 ]

@@ -29,6 +29,11 @@ async def pdf2image_async(
 ) -> list[str] | list["PILImage"]:
     out = []
     loop = asyncio.get_event_loop()
+    if pymupdf is None:
+        raise ImportError(
+            "PyMuPDF is not installed. Please install it with `pip install pymupdf`."
+        )
+
     with pymupdf.Document(stream=pdf_bytes, filetype="pdf") as pdf_doc:
         n_pages = len(pdf_doc)
 
@@ -58,6 +63,11 @@ def pdf2image(
     save_kwargs: dict | None = None,
 ) -> list[str] | list["PILImage"]:
     out = []
+    if pymupdf is None:
+        raise ImportError(
+            "PyMuPDF is not installed. Please install it with `pip install pymupdf`."
+        )
+
     with pymupdf.Document(stream=pdf_bytes, filetype="pdf") as pdf_doc:
         n_pages = len(pdf_doc)
         for i in range(n_pages):

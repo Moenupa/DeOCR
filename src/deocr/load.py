@@ -61,6 +61,6 @@ def load_deocr_dataset(
         function=transform_wrapper,
         input_columns=feed_columns,
         batched=False,
-        num_proc=MAX_ASYNC_PAGES,
+        num_proc=MAX_ASYNC_PAGES,  # ty: ignore[unknown-argument]
     )
     return dataset
